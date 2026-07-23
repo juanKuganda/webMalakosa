@@ -41,6 +41,19 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-background text-on-surface">
         {children}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                  for(let registration of registrations) {
+                    registration.unregister();
+                  }
+                });
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );

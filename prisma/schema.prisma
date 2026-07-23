@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model CmsSettings {
+  id                String   @id @default(cuid())
+  heroTitle         String
+  heroTagline       String
+  heroDescription   String
+  heroImageUrl      String
+  visionTitle       String
+  visionDescription String
+  
+  // Stats
+  population                Int
+  dusunCount                Int
+  kkCount                   Int
+  connectivityIndex         Int
+  agriculturalLand          Int
+  agriculturalActivePercent Int
+  growthRate                String
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AgendaEvent {
+  id          String   @id @default(cuid())
+  date        String
+  title       String
+  desc        String
+  location    String
+  borderClass String
+  tagColor    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TourismSpot {
+  id           String   @id @default(cuid())
+  title        String
+  category     String
+  description  String
+  visitorCount Int
+  status       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

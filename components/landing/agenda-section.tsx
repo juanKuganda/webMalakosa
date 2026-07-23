@@ -1,62 +1,45 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MapPin, ArrowRight } from "@phosphor-icons/react";
+import { useCMSData } from "@/lib/cms-store";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const EVENTS = [
-  {
-    date: "15 MEI 2024",
-    title: "Festival Panen Raya",
-    desc: "Syukuran hasil bumi dengan pameran teknologi pertanian terbaru desa.",
-    location: "Balai Desa Malakosa",
-    borderClass: "border-l-secondary",
-    tagColor: "text-secondary",
-  },
-  {
-    date: "22 JUNI 2024",
-    title: "Workshop Coding Remaja",
-    desc: "Pelatihan pengembangan aplikasi mobile untuk anak muda desa.",
-    location: "Digital Hub Malakosa",
-    borderClass: "border-l-primary",
-    tagColor: "text-primary",
-  },
-  {
-    date: "05 JULI 2024",
-    title: "Malakosa Eco-Beach Day",
-    desc: "Aksi bersih pantai dan penanaman mangrove bersama wisatawan.",
-    location: "Pesisir Barat Pantai",
-    borderClass: "border-l-on-secondary-container",
-    tagColor: "text-on-secondary-container",
-  },
-];
-
 export default function AgendaSection() {
+  const { data } = useCMSData();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const cards = gsap.utils.toArray(".agenda-card");
-    gsap.fromTo(
-      cards,
-      { opacity: 0, y: 30 },
-      {
-        opacity: 1,
-        y: 0,
-        stagger: 0.2,
-        duration: 0.8,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 80%",
-        },
-      }
-    );
-  }, []);
+  useGSAP(() => {
+    if (data.agenda && data.agenda.length > 0) {
+      // Small timeout to ensure DOM is updated before selecting
+      setTimeout(() => {
+        const cards = gsap.utils.toArray(".agenda-card");
+        if (cards.length > 0) {
+          gsap.fromTo(
+            cards,
+            { opacity: 0, y: 30 },
+            {
+              opacity: 1,
+              y: 0,
+              stagger: 0.2,
+              duration: 0.8,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: containerRef.current,
+                start: "top 80%",
+              },
+            }
+          );
+        }
+      }, 0);
+    }
+  }, { dependencies: [data.agenda], scope: containerRef });
 
   return (
     <section ref={containerRef} className="space-y-12" id="agenda">
@@ -78,13 +61,13 @@ export default function AgendaSection() {
 
       {/* Events Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {EVENTS.map((event, index) => (
+        {data.agenda.map((event) => (
           <div
-            key={index}
-            className={`agenda-card bento-card p-8 rounded-[2rem] border-l-8 ${event.borderClass} flex flex-col justify-between min-h-[260px]`}
+            key={event.id}
+            className={`agenda-card bento-card p-8 rounded-[2rem] border-l-8 ${event.borderClass || "border-l-primary"} flex flex-col justify-between min-h-[260px]`}
           >
             <div>
-              <span className={`font-mono text-xs font-bold ${event.tagColor}`}>
+              <span className={`font-mono text-xs font-bold ${event.tagColor || "text-primary"}`}>
                 {event.date}
               </span>
               <h4 className="font-heading text-xl md:text-2xl font-bold mt-4 mb-3 text-primary">

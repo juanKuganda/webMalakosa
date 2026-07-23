@@ -1,20 +1,23 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Eye, ShieldCheck, SquaresFour, Users, Broadcast, ArrowRight } from "@phosphor-icons/react";
+import { useCMSData } from "@/lib/cms-store";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
 export default function BentoGridSection() {
+  const { data } = useCMSData();
   const containerRef = useRef<HTMLDivElement>(null);
   const countRef = useRef<HTMLDivElement>(null);
   const circleRef = useRef<SVGPathElement>(null);
 
-  useEffect(() => {
+  useGSAP(() => {
     // 1. Staggered fade-up animation for all bento cards in grid
     const cards = gsap.utils.toArray(".bento-animate");
     gsap.fromTo(
@@ -32,18 +35,16 @@ export default function BentoGridSection() {
         },
       }
     );
+  }, { scope: containerRef });
 
-    // 2. Count up animation for population
-    const countTarget = 1248;
+  // Dynamic counter and progress animations whenever stats update
+  useGSAP(() => {
+    const countTarget = data.stats.population;
     const counterObj = { value: 0 };
-    gsap.to(counterObj, {
+    const anim = gsap.to(counterObj, {
       value: countTarget,
-      duration: 2,
+      duration: 1.5,
       ease: "power2.out",
-      scrollTrigger: {
-        trigger: countRef.current,
-        start: "top 85%",
-      },
       onUpdate: () => {
         if (countRef.current) {
           countRef.current.innerText = Math.floor(counterObj.value).toLocaleString("id-ID");
@@ -51,7 +52,6 @@ export default function BentoGridSection() {
       },
     });
 
-    // 3. SVG progress circle animation for agricultural land
     if (circleRef.current) {
       const length = circleRef.current.getTotalLength();
       gsap.set(circleRef.current, {
@@ -59,18 +59,18 @@ export default function BentoGridSection() {
         strokeDashoffset: length,
       });
 
-      // Target is 75%, so strokeDashoffset should animate to length * (1 - 0.75)
+      const activeRatio = Math.min(Math.max(data.stats.agriculturalActivePercent, 0), 100) / 100;
       gsap.to(circleRef.current, {
-        strokeDashoffset: length * (1 - 0.75),
-        duration: 1.5,
+        strokeDashoffset: length * (1 - activeRatio),
+        duration: 1.2,
         ease: "power2.out",
-        scrollTrigger: {
-          trigger: circleRef.current,
-          start: "top 85%",
-        },
       });
     }
-  }, []);
+
+    return () => {
+      anim.kill();
+    };
+  }, { dependencies: [data.stats.population, data.stats.agriculturalActivePercent], scope: containerRef });
 
   return (
     <section ref={containerRef} className="grid grid-cols-12 gap-6" id="profil">
@@ -81,10 +81,10 @@ export default function BentoGridSection() {
             <Eye size={36} className="text-white" />
           </div>
           <h2 className="font-heading text-3xl md:text-5xl font-extrabold mb-6 leading-tight">
-            Visi Masa Depan Digital
+            {data.visionTitle}
           </h2>
           <p className="font-sans text-base md:text-lg text-white/80 max-w-xl leading-relaxed">
-            Menjadi pionir desa digital di Indonesia Timur yang mengintegrasikan teknologi blockchain untuk transparansi desa dan AI untuk efisiensi agrikultur.
+            {data.visionDescription}
           </p>
         </div>
         <div className="flex flex-wrap gap-4 mt-8 relative z-10">
@@ -107,7 +107,7 @@ export default function BentoGridSection() {
           ref={countRef}
           className="font-heading text-6xl md:text-8xl text-primary font-black tabular-nums mb-4"
         >
-          0
+          {data.stats.population.toLocaleString("id-ID")}
         </div>
         <div className="font-heading text-lg md:text-xl text-on-secondary-container font-bold">
           Jiwa Terdaftar
@@ -116,7 +116,7 @@ export default function BentoGridSection() {
           <div className="bg-secondary h-full w-[85%]"></div>
         </div>
         <p className="mt-4 text-xs text-on-secondary-container/70 font-semibold">
-          +2.4% Pertumbuhan Tahun Ini
+          {data.stats.growthRate}
         </p>
       </div>
 
@@ -124,7 +124,9 @@ export default function BentoGridSection() {
       <div className="bento-animate col-span-12 md:col-span-4 bg-surface-container-high p-8 md:p-10 rounded-[2rem] md:rounded-[3rem] flex flex-col justify-between min-h-[220px]">
         <div className="flex justify-between items-start">
           <SquaresFour size={32} className="text-primary" />
-          <span className="font-heading text-3xl font-black text-primary">5</span>
+          <span className="font-heading text-3xl font-black text-primary">
+            {data.stats.dusunCount}
+          </span>
         </div>
         <div>
           <h4 className="font-heading font-bold text-lg md:text-xl text-primary">Wilayah Dusun</h4>
@@ -135,7 +137,9 @@ export default function BentoGridSection() {
       <div className="bento-animate col-span-12 md:col-span-4 bg-surface-container-highest p-8 md:p-10 rounded-[2rem] md:rounded-[3rem] flex flex-col justify-between min-h-[220px]">
         <div className="flex justify-between items-start">
           <Users size={32} className="text-primary" />
-          <span className="font-heading text-3xl font-black text-primary">312</span>
+          <span className="font-heading text-3xl font-black text-primary">
+            {data.stats.kkCount}
+          </span>
         </div>
         <div>
           <h4 className="font-heading font-bold text-lg md:text-xl text-primary">Kepala Keluarga</h4>
@@ -152,7 +156,9 @@ export default function BentoGridSection() {
               Live Network
             </span>
           </div>
-          <div className="font-heading text-4xl font-extrabold mb-1">98%</div>
+          <div className="font-heading text-4xl font-extrabold mb-1">
+            {data.stats.connectivityIndex}%
+          </div>
           <div className="font-sans font-bold text-sm">Indeks Konektivitas</div>
         </div>
         <div className="mt-6 relative z-10">
@@ -176,7 +182,7 @@ export default function BentoGridSection() {
             Lahan Produktif
           </span>
           <h3 className="font-heading text-2xl md:text-4xl font-extrabold text-primary mb-4 leading-tight">
-            42 Hektar Sawah Organik
+            {data.stats.agriculturalLand} Hektar Sawah Organik
           </h3>
           <p className="font-sans text-sm md:text-base text-on-surface-variant leading-relaxed">
             Seluruh lahan telah dilengkapi dengan sensor kelembaban tanah dan sistem irigasi pintar berbasis IoT.
@@ -199,7 +205,7 @@ export default function BentoGridSection() {
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center font-heading font-bold text-primary text-sm">
-            75% Aktif
+            {data.stats.agriculturalActivePercent}% Aktif
           </div>
         </div>
       </div>

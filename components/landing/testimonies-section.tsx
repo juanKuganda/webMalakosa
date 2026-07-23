@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Star, Quotes } from "@phosphor-icons/react";
 
@@ -29,7 +30,7 @@ export default function TestimoniesSection() {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useGSAP(() => {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
@@ -47,7 +48,7 @@ export default function TestimoniesSection() {
       { opacity: 1, y: 0, stagger: 0.2, duration: 0.8, ease: "power2.out" },
       "-=0.5"
     );
-  }, []);
+  }, { scope: containerRef });
 
   return (
     <section

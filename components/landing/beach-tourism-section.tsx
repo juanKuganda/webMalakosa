@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Waves, Sun, Star } from "@phosphor-icons/react";
+import Image from "next/image";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -14,7 +16,7 @@ export default function BeachTourismSection() {
   const textRef = useRef<HTMLDivElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useGSAP(() => {
     // Entrance animations triggered on scroll
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -33,7 +35,7 @@ export default function BeachTourismSection() {
       { opacity: 1, x: 0, duration: 1, ease: "power2.out" },
       "-=0.8"
     );
-  }, []);
+  }, { scope: containerRef });
 
   return (
     <section
@@ -80,10 +82,12 @@ export default function BeachTourismSection() {
       {/* Image Section */}
       <div ref={imageContainerRef} className="relative group">
         <div className="absolute -inset-4 bg-secondary/10 rounded-[2rem] md:rounded-[3rem] -rotate-2 group-hover:rotate-0 transition-transform duration-500"></div>
-        <img
+        <Image
           alt="Wisata Pantai Malakosa"
           className="relative rounded-[2rem] md:rounded-[2.5rem] w-full h-[400px] md:h-[600px] object-cover shadow-2xl transition-transform duration-500 hover:scale-[1.02]"
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWIsgNWbz4kplrATgyN0RA-4puc2tS5drM4JyecVD60tnubBbBPOKxMsgwPlF8reCjOy8YQ9zvzcAe52CLCBp8UnthdvqhizDaPNoFQyMRDKJSyy6iQFwb0fNo1iTtM3dKhmiCCLPZOi6DiB8UusOitnv7BAvZGghLx6_0Ua8KCDpkxDDlGmC-mrTcGr3JEV_4rm1ikgcW5tKoaFTbKGJ2tciiu8pE5p__02_G3nkYvjgPz1nMRLQ2OQ"
+          width={800}
+          height={600}
         />
         <div className="absolute bottom-6 right-6 bg-white/95 backdrop-blur-md p-5 md:p-6 rounded-2xl md:rounded-3xl shadow-lg border border-white/20 max-w-[200px]">
           <p className="font-mono text-[10px] text-secondary font-bold mb-1 uppercase tracking-wider">
