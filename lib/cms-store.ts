@@ -81,7 +81,7 @@ export function useCMSData() {
     }
 
     if (!cmsDataPromise) {
-      cmsDataPromise = fetch("/api/cms")
+      cmsDataPromise = fetch("/api/cms", { cache: "no-store" })
         .then(async (res) => {
           if (!res.ok) throw new Error("Network response was not ok");
           const json = await res.json();
@@ -107,7 +107,7 @@ export function useCMSData() {
     cachedData = newData;
     
     // Save to DB
-    try {
+    try {``
       const res = await fetch("/api/cms", {
         method: "PUT",
         headers: {

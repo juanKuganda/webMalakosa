@@ -53,10 +53,10 @@ export default function AgendaSection() {
             Ikuti berbagai kegiatan komunitas dan festival digital kami.
           </p>
         </div>
-        <button className="text-primary font-bold flex items-center gap-2 hover:underline cursor-pointer group text-sm md:text-base">
+        <a href="#peta" className="text-primary font-bold flex items-center gap-2 hover:underline cursor-pointer group text-sm md:text-base inline-flex">
           Lihat Kalender Lengkap{" "}
           <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-        </button>
+        </a>
       </div>
 
       {/* Events Grid */}

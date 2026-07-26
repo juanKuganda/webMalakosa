@@ -8,6 +8,17 @@ import {
   AgendaEvent,
   VillageCMSData,
 } from "@/lib/cms-store";
+import { toast } from "sonner";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend
+} from 'recharts';
 import {
   Users,
   SquaresFour,
@@ -64,18 +75,7 @@ export default function AdminDashboardPage() {
 
   const handleSave = () => {
     updateData(formData);
-    setSaveStatus("Perubahan berhasil disimpan! Landing page telah ter-update secara otomatis.");
-    setTimeout(() => {
-      setSaveStatus(null);
-    }, 4000);
-  };
-
-  const handleReset = () => {
-    if (window.confirm("Apakah Anda yakin ingin mengembalikan semua data ke default awal?")) {
-      resetData();
-      setSaveStatus("Data telah dikembalikan ke standar awal.");
-      setTimeout(() => setSaveStatus(null), 4000);
-    }
+    toast.success("Perubahan berhasil disimpan! Landing page telah ter-update secara otomatis.");
   };
 
   const handleLogout = async () => {
@@ -123,9 +123,6 @@ export default function AdminDashboardPage() {
       <header className="sticky top-0 z-50 bg-[#012d1d] text-white shadow-xl backdrop-blur-lg border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-[#0e6c4a] rounded-xl flex items-center justify-center font-heading font-extrabold text-white text-xl shadow-inner">
-              M
-            </div>
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="font-heading text-lg font-bold">Malakosa CMS</h1>
@@ -149,47 +146,23 @@ export default function AdminDashboardPage() {
               <span>Lihat Landing Page</span>
             </Link>
             <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-100 text-xs font-semibold px-3.5 py-2.5 rounded-xl border border-red-400/20 transition-colors cursor-pointer"
-            >
-              <span>Logout</span>
-            </button>
-            <button
-              onClick={handleReset}
-              className="flex items-center gap-2 bg-red-500/20 hover:bg-red-500/30 text-red-200 text-xs font-semibold px-3.5 py-2.5 rounded-xl border border-red-400/30 transition-colors cursor-pointer"
-              title="Reset data ke standar awal"
-            >
-              <ArrowsCounterClockwise size={16} />
-              <span className="hidden md:inline">Reset</span>
-            </button>
-            <button
               onClick={handleSave}
               className="flex items-center gap-2 bg-[#0e6c4a] hover:bg-[#19724f] text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all cursor-pointer"
             >
               <FloppyDisk size={18} />
               <span>Simpan Perubahan</span>
             </button>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 bg-red-500/10 hover:bg-red-500/90 text-red-100 text-xs font-semibold px-3.5 py-2.5 rounded-xl border border-red-400/20 transition-colors cursor-pointer"
+            >
+              <span>Logout</span>
+            </button>
           </div>
         </div>
       </header>
 
-      {/* Save Notification Toast */}
-      {saveStatus && (
-        <div className="max-w-7xl mx-auto px-6 mt-4">
-          <div className="bg-[#0e6c4a] text-white px-5 py-3.5 rounded-2xl shadow-lg flex items-center justify-between animate-fadeIn border border-[#a0f4c8]/30">
-            <div className="flex items-center gap-3">
-              <CheckCircle size={22} className="text-[#a0f4c8]" />
-              <span className="text-sm font-semibold">{saveStatus}</span>
-            </div>
-            <button
-              onClick={() => setSaveStatus(null)}
-              className="text-white/80 hover:text-white text-xs font-bold underline ml-4 cursor-pointer"
-            >
-              Tutup
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Save Notification Toast handled by Sonner */}
 
       {/* Main Container */}
       <main className="max-w-7xl mx-auto px-6 mt-8 space-y-8">
@@ -252,22 +225,21 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          {/* Card 4: Connectivity */}
+          {/* Card 4: Connectivity (Now Jumlah Agama) */}
           <div className="bg-white p-6 rounded-3xl border border-[#012d1d]/10 shadow-sm flex items-center justify-between group hover:border-[#0e6c4a]/30 transition-all">
             <div>
               <span className="text-xs font-mono font-bold text-[#0e6c4a] uppercase tracking-wider block mb-1">
-                Indeks Konektivitas
+                Jumlah Agama Terdaftar
               </span>
               <div className="font-heading text-3xl font-black text-[#012d1d]">
-                {formData.stats.connectivityIndex}%
+                {formData.stats.connectivityIndex}
               </div>
               <span className="text-[11px] text-[#0e6c4a] font-semibold mt-1 block flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-[#0e6c4a] animate-ping inline-block"></span>
-                Digital Village Network
+                Data Kependudukan
               </span>
             </div>
             <div className="w-12 h-12 bg-[#012d1d] text-white rounded-2xl flex items-center justify-center font-bold">
-              <Broadcast size={24} />
+              <Users size={24} />
             </div>
           </div>
         </section>
@@ -383,26 +355,26 @@ export default function AdminDashboardPage() {
                   </p>
                 </div>
 
-                {/* Connectivity index slider */}
+                {/* Jumlah Agama slider */}
                 <div className="bg-[#f6f3f2] p-5 rounded-2xl border border-zinc-200 space-y-2">
                   <div className="flex justify-between items-center">
                     <label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
-                      Indeks Konektivitas (%)
+                      Jumlah Agama Terdaftar
                     </label>
                     <span className="font-heading font-black text-lg text-[#0e6c4a]">
-                      {formData.stats.connectivityIndex}%
+                      {formData.stats.connectivityIndex}
                     </span>
                   </div>
                   <input
                     type="range"
-                    min="50"
-                    max="100"
+                    min="1"
+                    max="6"
                     value={formData.stats.connectivityIndex}
                     onChange={(e) => handleStatChange("connectivityIndex", Number(e.target.value))}
                     className="w-full accent-[#0e6c4a] cursor-pointer"
                   />
                   <p className="text-[11px] text-[#414844]">
-                    Persentase cakupan jaringan internet & sensor IoT desa.
+                    Jumlah agama yang dianut oleh penduduk desa.
                   </p>
                 </div>
 
@@ -460,6 +432,47 @@ export default function AdminDashboardPage() {
                   />
                   <p className="text-[11px] text-[#414844]">
                     Teks deskripsi pertumbuhan tahunan di kartu populasi utama.
+                  </p>
+                </div>
+
+                {/* Bagan Pengunjung Wisata */}
+                <div className="bg-[#f6f3f2] p-5 rounded-2xl border border-zinc-200 space-y-4 md:col-span-2">
+                  <h4 className="font-heading font-bold text-sm text-[#012d1d]">
+                    Bagan Pengunjung Wisata
+                  </h4>
+                  <div className="w-full h-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={formData.tourism.map((spot) => ({
+                          name: spot.title,
+                          pengunjung: spot.visitorCount,
+                        }))}
+                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e4e4e7" />
+                        <XAxis
+                          dataKey="name"
+                          axisLine={false}
+                          tickLine={false}
+                          tick={{ fill: "#414844", fontSize: 12 }}
+                          dy={10}
+                        />
+                        <YAxis
+                          axisLine={false}
+                          tickLine={false}
+                          tick={{ fill: "#414844", fontSize: 12 }}
+                          dx={-10}
+                        />
+                        <Tooltip
+                          cursor={{ fill: "#f4f4f5" }}
+                          contentStyle={{ borderRadius: "12px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
+                        />
+                        <Bar dataKey="pengunjung" fill="#0e6c4a" radius={[4, 4, 0, 0]} barSize={40} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <p className="text-[11px] text-[#414844]">
+                    Grafik ini menampilkan jumlah pengunjung bulanan untuk setiap destinasi wisata.
                   </p>
                 </div>
               </div>

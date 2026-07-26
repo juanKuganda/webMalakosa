@@ -12,7 +12,7 @@ export default function Footer() {
             Malakosa
           </div>
           <p className="text-on-surface-variant font-sans text-sm text-center md:text-left leading-relaxed">
-            © {new Date().getFullYear()} Desa Malakosa. Modern Village Digital Presence.
+            © {new Date().getFullYear()} KKN 117 Desa Malakosa. Modern Village Digital Presence.
             <br />
             Kabupaten Parigi Moutong, Sulawesi Tengah.
           </p>

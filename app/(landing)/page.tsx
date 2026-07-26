@@ -3,6 +3,7 @@ import HeroSection from "@/components/landing/hero-section";
 import BentoGridSection from "@/components/landing/bento-grid-section";
 import BeachTourismSection from "@/components/landing/beach-tourism-section";
 import AgendaSection from "@/components/landing/agenda-section";
+import MapSection from "@/components/landing/map-section";
 import TestimoniesSection from "@/components/landing/testimonies-section";
 
 export default function LandingPage() {
@@ -12,6 +13,7 @@ export default function LandingPage() {
       <BentoGridSection />
       <BeachTourismSection />
       <AgendaSection />
+      <MapSection />
       <TestimoniesSection />
     </>
   );

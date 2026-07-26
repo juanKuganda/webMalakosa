@@ -74,9 +74,9 @@ export default function BeachTourismSection() {
             </p>
           </div>
         </div>
-        <button className="bg-primary text-white px-8 py-4 rounded-xl font-bold text-sm hover:bg-primary-container transition-all shadow-xl shadow-primary/10 cursor-pointer">
+        <a href="#peta" className="bg-primary text-white px-8 py-4 rounded-xl font-bold text-sm hover:bg-primary-container transition-all shadow-xl shadow-primary/10 cursor-pointer inline-block text-center">
           Eksplorasi Pantai
-        </button>
+        </a>
       </div>
 
       {/* Image Section */}

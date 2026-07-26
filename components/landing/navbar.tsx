@@ -8,7 +8,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="w-full sticky top-0 backdrop-blur-md bg-surface/80 border-b border-outline/10 z-50 transition-all duration-300">
+    <nav className="w-full sticky top-0 bg-white border-b border-outline/10 z-50 transition-all duration-300">
       <div className="flex justify-between items-center px-6 md:px-16 py-4 max-w-7xl mx-auto">
         {/* Logo */}
         <div className="font-heading text-2xl font-extrabold text-primary tracking-tighter">
@@ -45,9 +45,12 @@ export default function Navbar() {
 
         {/* CTA Button */}
         <div className="hidden md:block">
-          <button className="bg-primary text-on-primary px-6 py-3 rounded-lg font-mono text-xs font-semibold active:scale-95 transition-transform hover:bg-primary-container cursor-pointer">
+          <a
+            href="#peta"
+            className="bg-primary text-on-primary px-6 py-3 rounded-lg font-mono text-xs font-semibold active:scale-95 transition-transform hover:bg-primary-container cursor-pointer inline-block"
+          >
             Hubungi Kami
-          </button>
+          </a>
         </div>
 
         {/* Mobile Menu Button */}
@@ -64,7 +67,9 @@ export default function Navbar() {
       <div
         className={cn(
           "md:hidden absolute w-full bg-surface border-b border-outline/10 transition-all duration-300 ease-in-out origin-top overflow-hidden",
-          isOpen ? "max-h-64 opacity-100 py-4" : "max-h-0 opacity-0 pointer-events-none"
+          isOpen
+            ? "max-h-64 opacity-100 py-4"
+            : "max-h-0 opacity-0 pointer-events-none",
         )}
       >
         <div className="flex flex-col gap-4 px-6">
@@ -96,9 +101,12 @@ export default function Navbar() {
           >
             Peta
           </a>
-          <button className="bg-primary text-on-primary px-6 py-3 rounded-lg font-mono text-xs font-semibold w-full text-center">
+          <a
+            href="#kontak"
+            className="bg-primary text-on-primary px-6 py-3 rounded-lg font-mono text-xs font-semibold w-full text-center inline-block"
+          >
             Hubungi Kami
-          </button>
+          </a>
         </div>
       </div>
     </nav>

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { AgendaEvent, TourismSpot } from "@/lib/cms-store";
+
+export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     const settings = await prisma.cmsSettings.findFirst();
