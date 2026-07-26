@@ -54,6 +54,8 @@ model TourismSpot {
   title        String
   category     String
   description  String
+  imageUrl     String?
+  content      String?
   visitorCount Int
   status       String
   createdAt    DateTime @default(now())

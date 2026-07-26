@@ -1,20 +1,28 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Waves, Sun, Star } from "@phosphor-icons/react";
+import { Star, CaretLeft, CaretRight, MapPinLine, Users } from "@phosphor-icons/react";
 import Image from "next/image";
+import Link from "next/link";
+import { useCMSData } from "@/lib/cms-store";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
 export default function BeachTourismSection() {
+  const { data } = useCMSData();
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
+  const parallaxRef = useRef<HTMLImageElement>(null);
+  
+  const [activeIndex, setActiveIndex] = useState(0);
+  const spots = data.tourism || [];
+  const activeSpot = spots[activeIndex];
 
   useGSAP(() => {
     // Entrance animations triggered on scroll
@@ -27,82 +35,168 @@ export default function BeachTourismSection() {
 
     tl.fromTo(
       textRef.current,
-      { opacity: 0, x: -50 },
-      { opacity: 1, x: 0, duration: 1, ease: "power2.out" }
+      { opacity: 0, y: 50 },
+      { opacity: 1, y: 0, duration: 1, ease: "power2.out" }
     ).fromTo(
       imageContainerRef.current,
-      { opacity: 0, x: 50 },
-      { opacity: 1, x: 0, duration: 1, ease: "power2.out" },
+      { opacity: 0, scale: 0.95 },
+      { opacity: 1, scale: 1, duration: 1.2, ease: "expo.out" },
       "-=0.8"
     );
+
+    // Parallax effect on image
+    gsap.to(parallaxRef.current, {
+      y: 100, // Move image down slightly as user scrolls down for parallax
+      ease: "none",
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: true,
+      },
+    });
   }, { scope: containerRef });
+
+  useEffect(() => {
+    // Simple fade animation when changing slides
+    gsap.fromTo(
+      ".slide-content",
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
+    );
+  }, [activeIndex]);
+
+  const nextSlide = () => {
+    if (spots.length > 0) {
+      setActiveIndex((prev) => (prev + 1) % spots.length);
+    }
+  };
+
+  const prevSlide = () => {
+    if (spots.length > 0) {
+      setActiveIndex((prev) => (prev - 1 + spots.length) % spots.length);
+    }
+  };
+
+  if (!spots.length) return null;
 
   return (
     <section
       ref={containerRef}
-      className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
+      className="relative w-full max-w-7xl mx-auto py-24 md:py-32"
       id="wisata"
     >
-      {/* Text Section */}
-      <div ref={textRef} className="space-y-6 md:space-y-8">
-        <span className="text-secondary font-mono text-xs uppercase tracking-[0.3em] font-bold block">
-          Permata Sulawesi Tengah
-        </span>
-        <h2 className="font-heading text-3xl md:text-5xl font-extrabold text-primary leading-tight">
-          Wisata Pantai Malakosa
+      {/* Huge Outline Text Background */}
+      <div className="absolute top-12 left-0 w-full overflow-hidden leading-none pointer-events-none select-none z-0 opacity-[0.03]">
+        <h2 className="font-heading font-black text-[12vw] whitespace-nowrap text-transparent stroke-black uppercase" style={{ WebkitTextStroke: "2px #012d1d" }}>
+          DESTINASI DESA
         </h2>
-        <p className="font-sans text-base md:text-lg text-on-surface-variant leading-relaxed">
-          Nikmati kemurnian alam di pesisir Malakosa. Pasir putih yang selembut sutra dipadukan dengan air laut kristal berwarna biru toska, menawarkan pelarian sempurna dari hiruk-pikuk perkotaan. Ekosistem terumbu karang yang terjaga menjadikannya surga bagi pecinta snorkeling dan diving.
-        </p>
-        <div className="grid grid-cols-2 gap-6">
-          <div className="flex flex-col gap-2">
-            <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
-              <Waves size={24} className="text-secondary" />
-            </div>
-            <h4 className="font-heading font-bold text-primary mt-1">Air Kristal</h4>
-            <p className="text-xs md:text-sm text-on-surface-variant leading-relaxed">
-              Kejernihan air yang luar biasa hingga dasar laut.
-            </p>
-          </div>
-          <div className="flex flex-col gap-2">
-            <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
-              <Sun size={24} className="text-secondary" />
-            </div>
-            <h4 className="font-heading font-bold text-primary mt-1">Pasir Putih</h4>
-            <p className="text-xs md:text-sm text-on-surface-variant leading-relaxed">
-              Garis pantai murni yang dikelola secara organik.
-            </p>
-          </div>
-        </div>
-        <a href="#peta" className="bg-primary text-white px-8 py-4 rounded-xl font-bold text-sm hover:bg-primary-container transition-all shadow-xl shadow-primary/10 cursor-pointer inline-block text-center">
-          Eksplorasi Pantai
-        </a>
       </div>
 
-      {/* Image Section */}
-      <div ref={imageContainerRef} className="relative group">
-        <div className="absolute -inset-4 bg-secondary/10 rounded-[2rem] md:rounded-[3rem] -rotate-2 group-hover:rotate-0 transition-transform duration-500"></div>
-        <Image
-          alt="Wisata Pantai Malakosa"
-          className="relative rounded-[2rem] md:rounded-[2.5rem] w-full h-[400px] md:h-[600px] object-cover shadow-2xl transition-transform duration-500 hover:scale-[1.02]"
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWIsgNWbz4kplrATgyN0RA-4puc2tS5drM4JyecVD60tnubBbBPOKxMsgwPlF8reCjOy8YQ9zvzcAe52CLCBp8UnthdvqhizDaPNoFQyMRDKJSyy6iQFwb0fNo1iTtM3dKhmiCCLPZOi6DiB8UusOitnv7BAvZGghLx6_0Ua8KCDpkxDDlGmC-mrTcGr3JEV_4rm1ikgcW5tKoaFTbKGJ2tciiu8pE5p__02_G3nkYvjgPz1nMRLQ2OQ"
-          width={800}
-          height={600}
-        />
-        <div className="absolute bottom-6 right-6 bg-white/95 backdrop-blur-md p-5 md:p-6 rounded-2xl md:rounded-3xl shadow-lg border border-white/20 max-w-[200px]">
-          <p className="font-mono text-[10px] text-secondary font-bold mb-1 uppercase tracking-wider">
-            Peringkat Destinasi
-          </p>
-          <div className="flex gap-1 mb-2">
-            <Star size={16} weight="fill" className="text-yellow-500" />
-            <Star size={16} weight="fill" className="text-yellow-500" />
-            <Star size={16} weight="fill" className="text-yellow-500" />
-            <Star size={16} weight="fill" className="text-yellow-500" />
-            <Star size={16} weight="fill" className="text-yellow-500" />
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10 px-6 lg:px-0">
+        
+        {/* Text Section (Overlapping) */}
+        <div ref={textRef} className="lg:col-span-5 lg:col-start-1 lg:row-start-1 z-20 space-y-8 lg:-mr-20 mt-10 lg:mt-0 order-2 lg:order-1 slide-content">
+          <div className="inline-block px-4 py-2 bg-secondary/10 border border-secondary/20 rounded-full shadow-sm">
+            <span className="text-secondary font-mono text-xs uppercase tracking-[0.3em] font-bold block">
+              {activeSpot.category}
+            </span>
           </div>
-          <p className="text-[11px] text-on-surface-variant italic leading-relaxed">
-            &quot;Pantai paling jernih yang pernah saya kunjungi di Sulteng.&quot;
-          </p>
+          
+          <h2 className="font-heading text-5xl md:text-7xl lg:text-[5.5rem] font-black text-primary leading-[0.9] tracking-tighter drop-shadow-2xl uppercase">
+            {activeSpot.title.split(' ').map((word, i) => (
+              <React.Fragment key={i}>
+                {word} {i === 0 && <br />}
+              </React.Fragment>
+            ))}
+          </h2>
+          
+          <div className="bg-white/90 backdrop-blur-xl p-8 rounded-[2rem] shadow-2xl border border-white space-y-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#a0f4c8]/20 rounded-full blur-3xl" />
+            <p className="font-sans text-base md:text-lg text-on-surface-variant leading-relaxed relative z-10">
+              {activeSpot.description}
+            </p>
+            
+            <div className="grid grid-cols-2 gap-6 relative z-10">
+              <div className="flex flex-col gap-3">
+                <div className="w-14 h-14 rounded-2xl bg-[#0e6c4a] flex items-center justify-center text-white shadow-lg shadow-[#0e6c4a]/30 transform -rotate-3 hover:rotate-0 transition-transform">
+                  <Users size={28} weight="bold" />
+                </div>
+                <h4 className="font-heading font-black text-primary mt-1 text-sm md:text-base">Pengunjung</h4>
+                <p className="text-xl font-bold font-mono text-[#012d1d]">{activeSpot.visitorCount.toLocaleString('id-ID')}</p>
+              </div>
+              <div className="flex flex-col gap-3">
+                <div className="w-14 h-14 rounded-2xl bg-[#a0f4c8] flex items-center justify-center text-[#012d1d] shadow-lg shadow-[#a0f4c8]/30 transform rotate-3 hover:rotate-0 transition-transform">
+                  <MapPinLine size={28} weight="bold" />
+                </div>
+                <h4 className="font-heading font-black text-primary mt-1 text-sm md:text-base">Status</h4>
+                <p className="text-sm font-bold font-mono text-[#012d1d] uppercase tracking-wider">{activeSpot.status}</p>
+              </div>
+            </div>
+            
+            <div className="relative z-10 pt-4">
+              <Link 
+                href={`/wisata/${activeSpot.id}`} 
+                className="bg-[#012d1d] text-white w-full py-5 rounded-2xl font-black text-sm hover:bg-[#0e6c4a] hover:-translate-y-1 transition-all shadow-xl shadow-[#012d1d]/20 flex items-center justify-center tracking-widest uppercase"
+              >
+                Eksplorasi Destinasi
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Image Section */}
+        <div ref={imageContainerRef} className="lg:col-span-8 lg:col-start-5 lg:row-start-1 relative z-10 w-full h-[400px] md:h-[700px] rounded-[3rem] overflow-hidden shadow-2xl order-1 lg:order-2 slide-content bg-zinc-100">
+          <div className="absolute inset-0 bg-gradient-to-t from-[#012d1d]/60 via-transparent to-transparent z-10 pointer-events-none" />
+          {activeSpot.imageUrl ? (
+            <Image
+              ref={parallaxRef}
+              alt={activeSpot.title}
+              className="absolute -top-[15%] left-0 w-full h-[130%] object-cover transition-opacity duration-500"
+              src={activeSpot.imageUrl}
+              width={1200}
+              height={800}
+              priority
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center bg-[#0e6c4a]">
+              <span className="text-white/20 text-4xl font-black tracking-widest uppercase">No Image</span>
+            </div>
+          )}
+          
+          <div className="absolute bottom-8 right-8 z-20 bg-[#012d1d]/70 backdrop-blur-md p-6 rounded-3xl border border-white/20 max-w-[260px] text-white hidden md:block">
+            <p className="font-mono text-[10px] text-[#a0f4c8] font-bold mb-2 uppercase tracking-widest">
+              Review Wisatawan
+            </p>
+            <div className="flex gap-1.5 mb-3">
+              <Star size={18} weight="fill" className="text-yellow-400 drop-shadow-md" />
+              <Star size={18} weight="fill" className="text-yellow-400 drop-shadow-md" />
+              <Star size={18} weight="fill" className="text-yellow-400 drop-shadow-md" />
+              <Star size={18} weight="fill" className="text-yellow-400 drop-shadow-md" />
+              <Star size={18} weight="fill" className="text-yellow-400 drop-shadow-md" />
+            </div>
+            <p className="text-xs text-white/90 italic leading-relaxed font-sans font-semibold">
+              &quot;Salah satu permata tersembunyi terbaik yang ada di desa ini.&quot;
+            </p>
+          </div>
+          
+          {/* Huge Easy-to-click Navigation Buttons */}
+          {spots.length > 1 && (
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-6 z-30 pointer-events-none lg:translate-x-0 lg:left-52">
+              <button 
+                onClick={prevSlide} 
+                className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/90 backdrop-blur-md text-[#012d1d] flex items-center justify-center hover:bg-[#a0f4c8] hover:scale-110 transition-all shadow-xl pointer-events-auto border border-white/40"
+              >
+                <CaretLeft size={28} weight="bold" />
+              </button>
+              <button 
+                onClick={nextSlide} 
+                className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#012d1d]/90 backdrop-blur-md text-white flex items-center justify-center hover:bg-[#0e6c4a] hover:scale-110 transition-all shadow-xl pointer-events-auto border border-white/20"
+              >
+                <CaretRight size={28} weight="bold" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </section>

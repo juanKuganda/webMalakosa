@@ -1,114 +1,88 @@
 "use client";
 
-import React, { useState } from "react";
-import { List, X } from "@phosphor-icons/react";
-import { cn } from "@/lib/utils";
+import React, { useState, useEffect } from "react";
+import CardNav from "@/components/ui/card-nav";
+import Link from "next/link";
+
+const items = [
+  {
+    label: "Jelajah",
+    bgColor: "#f8f9fa",
+    textColor: "#012d1d",
+    links: [
+      { label: "Beranda", href: "/" },
+      { label: "Profil Desa", href: "/#profil" },
+      { label: "Keunggulan", href: "/#keunggulan" },
+      { label: "Peta Digital", href: "/#peta" }
+    ]
+  },
+  {
+    label: "Destinasi", 
+    bgColor: "#e9f9f0",
+    textColor: "#0e6c4a",
+    links: [
+      { label: "Wisata Bahari", href: "/#wisata" },
+      { label: "Agenda & Acara", href: "/#agenda" }
+    ]
+  },
+  {
+    label: "Layanan",
+    bgColor: "#012d1d", 
+    textColor: "#fff",
+    links: [
+      { label: "Layanan Desa", href: "https://chat.whatsapp.com/BDlBLxySwjT3xSpMC6HUVn" },
+      { label: "Hubungi Kami", href: "https://chat.whatsapp.com/BDlBLxySwjT3xSpMC6HUVn" }
+    ]
+  }
+];
+
+const logoNode = (
+  <Link href="/" className="font-heading text-2xl font-black tracking-tighter text-[#012d1d] cursor-pointer hover:opacity-80 transition-opacity">
+    MALAKOSA
+  </Link>
+);
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollY = React.useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Hide on scroll down, show on scroll up
+      if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
+        setIsVisible(false);
+      } else if (currentScrollY < lastScrollY.current || currentScrollY <= 50) {
+        setIsVisible(true);
+      }
+      
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <nav className="w-full sticky top-0 bg-white border-b border-outline/10 z-50 transition-all duration-300">
-      <div className="flex justify-between items-center px-6 md:px-16 py-4 max-w-7xl mx-auto">
-        {/* Logo */}
-        <div className="font-heading text-2xl font-extrabold text-primary tracking-tighter">
-          Malakosa
-        </div>
-
-        {/* Desktop Menu */}
-        <div className="hidden md:flex gap-8 items-center">
-          <a
-            className="text-primary font-bold border-b-2 border-primary pb-1 font-sans text-sm transition-all"
-            href="#"
-          >
-            Beranda
-          </a>
-          <a
-            className="text-on-surface-variant hover:text-primary transition-colors font-sans text-sm"
-            href="#profil"
-          >
-            Profil
-          </a>
-          <a
-            className="text-on-surface-variant hover:text-primary transition-colors font-sans text-sm"
-            href="#keunggulan"
-          >
-            Keunggulan
-          </a>
-          <a
-            className="text-on-surface-variant hover:text-primary transition-colors font-sans text-sm"
-            href="#peta"
-          >
-            Peta
-          </a>
-        </div>
-
-        {/* CTA Button */}
-        <div className="hidden md:block">
-          <a
-            href="#peta"
-            className="bg-primary text-on-primary px-6 py-3 rounded-lg font-mono text-xs font-semibold active:scale-95 transition-transform hover:bg-primary-container cursor-pointer inline-block"
-          >
-            Hubungi Kami
-          </a>
-        </div>
-
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden text-primary focus:outline-none p-1"
-          aria-label="Toggle Menu"
-        >
-          {isOpen ? <X size={24} /> : <List size={24} />}
-        </button>
-      </div>
-
-      {/* Mobile Menu Panel */}
-      <div
-        className={cn(
-          "md:hidden absolute w-full bg-surface border-b border-outline/10 transition-all duration-300 ease-in-out origin-top overflow-hidden",
-          isOpen
-            ? "max-h-64 opacity-100 py-4"
-            : "max-h-0 opacity-0 pointer-events-none",
-        )}
-      >
-        <div className="flex flex-col gap-4 px-6">
-          <a
-            className="text-primary font-bold font-sans text-sm"
-            href="#"
-            onClick={() => setIsOpen(false)}
-          >
-            Beranda
-          </a>
-          <a
-            className="text-on-surface-variant hover:text-primary transition-colors font-sans text-sm"
-            href="#profil"
-            onClick={() => setIsOpen(false)}
-          >
-            Profil
-          </a>
-          <a
-            className="text-on-surface-variant hover:text-primary transition-colors font-sans text-sm"
-            href="#keunggulan"
-            onClick={() => setIsOpen(false)}
-          >
-            Keunggulan
-          </a>
-          <a
-            className="text-on-surface-variant hover:text-primary transition-colors font-sans text-sm"
-            href="#peta"
-            onClick={() => setIsOpen(false)}
-          >
-            Peta
-          </a>
-          <a
-            href="#kontak"
-            className="bg-primary text-on-primary px-6 py-3 rounded-lg font-mono text-xs font-semibold w-full text-center inline-block"
-          >
-            Hubungi Kami
-          </a>
-        </div>
-      </div>
-    </nav>
+    <div 
+      className={`w-full fixed top-0 left-0 right-0 z-50 transition-transform duration-500 ease-in-out ${
+        isVisible ? "translate-y-0" : "-translate-y-[150px]"
+      }`}
+    >
+      <CardNav
+        logo={logoNode}
+        logoAlt="Malakosa Logo"
+        items={items}
+        baseColor="#ffffff"
+        menuColor="#012d1d"
+        buttonBgColor="#0e6c4a"
+        buttonTextColor="#ffffff"
+        buttonText="Hubungi Kami"
+        forceClose={!isVisible}
+        onCtaClick={() => window.open("https://chat.whatsapp.com/BDlBLxySwjT3xSpMC6HUVn", "_blank")}
+        ease="power4.out"
+      />
+    </div>
   );
 }

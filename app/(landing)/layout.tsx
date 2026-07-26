@@ -10,7 +10,7 @@ export default function LandingLayout({
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 w-full max-w-7xl mx-auto px-6 md:px-16 py-12 space-y-24 overflow-hidden">
+      <main className="flex-1 w-full">
         {children}
       </main>
       <Footer />

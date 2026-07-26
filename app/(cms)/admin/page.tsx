@@ -2,11 +2,13 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   useCMSData,
   AgendaEvent,
   VillageCMSData,
+  TourismSpot,
 } from "@/lib/cms-store";
 import { toast } from "sonner";
 import {
@@ -16,16 +18,12 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
-  Legend
+  ResponsiveContainer
 } from 'recharts';
 import {
   Users,
   SquaresFour,
-  Broadcast,
   Plant,
-  CheckCircle,
-  ArrowsCounterClockwise,
   FloppyDisk,
   Plus,
   Trash,
@@ -37,10 +35,9 @@ import {
 } from "@phosphor-icons/react";
 
 export default function AdminDashboardPage() {
-  const { data: storedData, updateData, resetData } = useCMSData();
+  const { data: storedData, updateData } = useCMSData();
   const [formData, setFormData] = useState<VillageCMSData>(storedData);
   const [activeTab, setActiveTab] = useState<"stats" | "hero" | "agenda" | "tourism">("stats");
-  const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const router = useRouter();
 
   // New agenda form state
@@ -83,8 +80,8 @@ export default function AdminDashboardPage() {
       await fetch("/api/auth/logout", { method: "POST" });
       router.push("/admin/login");
       router.refresh();
-    } catch (err) {
-      console.error("Logout failed", err);
+    } catch {
+      toast.error("Logout failed");
     }
   };
 
@@ -115,6 +112,38 @@ export default function AdminDashboardPage() {
       ...prev,
       agenda: prev.agenda.filter((a) => a.id !== id),
     }));
+  };
+
+  const handleTourismChange = (id: string, field: keyof TourismSpot, value: string | number) => {
+    setFormData(prev => ({
+      ...prev,
+      tourism: prev.tourism.map(t => t.id === id ? { ...t, [field]: value } : t)
+    }));
+  };
+
+  const handleUploadImage = async (id: string, file: File) => {
+    try {
+      toast.loading("Mengunggah gambar...");
+      const formDataUpload = new FormData();
+      formDataUpload.append("file", file);
+      
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formDataUpload,
+      });
+      
+      if (!res.ok) throw new Error("Gagal mengunggah");
+      
+      const data = await res.json();
+      if (data.url) {
+        handleTourismChange(id, "imageUrl", data.url);
+        toast.dismiss();
+        toast.success("Gambar berhasil diunggah!");
+      }
+    } catch {
+      toast.dismiss();
+      toast.error("Gagal mengunggah gambar");
+    }
   };
 
   return (
@@ -677,29 +706,67 @@ export default function AdminDashboardPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {formData.tourism.map((spot) => (
                   <div key={spot.id} className="bg-[#f6f3f2] p-6 rounded-2xl border border-zinc-200 space-y-4">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <span className="font-mono text-[10px] uppercase font-bold text-[#0e6c4a] bg-[#a0f4c8]/40 px-2.5 py-1 rounded-full border border-[#0e6c4a]/20">
-                          {spot.category}
-                        </span>
-                        <h4 className="font-heading font-bold text-lg text-[#012d1d] mt-2">
-                          {spot.title}
-                        </h4>
-                      </div>
-                      <span className="text-xs font-semibold bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full border border-emerald-300">
-                        {spot.status}
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="font-mono text-[10px] uppercase font-bold text-[#0e6c4a] bg-[#a0f4c8]/40 px-2.5 py-1 rounded-full border border-[#0e6c4a]/20">
+                        {spot.category}
                       </span>
+                      <input
+                        type="text"
+                        value={spot.status}
+                        onChange={(e) => handleTourismChange(spot.id, "status", e.target.value)}
+                        className="text-xs font-semibold bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full border border-emerald-300 w-24 text-center focus:outline-none"
+                      />
                     </div>
+                    
+                    <input
+                      type="text"
+                      value={spot.title}
+                      onChange={(e) => handleTourismChange(spot.id, "title", e.target.value)}
+                      className="w-full bg-white px-3 py-2 rounded-lg border border-zinc-300 font-heading font-bold text-lg text-[#012d1d] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
+                    />
 
-                    <p className="text-xs text-[#414844] leading-relaxed">
-                      {spot.description}
-                    </p>
+                    <textarea
+                      rows={2}
+                      value={spot.description}
+                      onChange={(e) => handleTourismChange(spot.id, "description", e.target.value)}
+                      placeholder="Deskripsi singkat..."
+                      className="w-full bg-white px-3 py-2 rounded-lg border border-zinc-300 text-xs text-[#414844] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
+                    />
+
+                    <textarea
+                      rows={4}
+                      value={spot.content || ""}
+                      onChange={(e) => handleTourismChange(spot.id, "content", e.target.value)}
+                      placeholder="Konten detail panjang..."
+                      className="w-full bg-white px-3 py-2 rounded-lg border border-zinc-300 text-xs text-[#414844] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
+                    />
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-[#012d1d]">Gambar Wisata</label>
+                      {spot.imageUrl && (
+                        <div className="w-full h-32 rounded-lg overflow-hidden border border-zinc-200 mb-2 relative">
+                          <Image src={spot.imageUrl} alt={spot.title} fill className="object-cover" />
+                        </div>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleUploadImage(spot.id, file);
+                        }}
+                        className="w-full text-xs text-[#414844] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-[#0e6c4a] file:text-white hover:file:bg-[#19724f]"
+                      />
+                    </div>
 
                     <div className="pt-2 flex justify-between items-center text-xs font-bold text-[#012d1d]">
                       <span>Pengunjung Bulan Ini:</span>
-                      <span className="font-heading text-base font-black text-[#0e6c4a]">
-                        {spot.visitorCount.toLocaleString("id-ID")} Orang
-                      </span>
+                      <input
+                        type="number"
+                        value={spot.visitorCount}
+                        onChange={(e) => handleTourismChange(spot.id, "visitorCount", Number(e.target.value))}
+                        className="w-24 bg-white px-2 py-1 rounded-md border border-zinc-300 font-heading text-base font-black text-[#0e6c4a] text-right focus:outline-none"
+                      />
                     </div>
                   </div>
                 ))}

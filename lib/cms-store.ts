@@ -27,6 +27,8 @@ export interface TourismSpot {
   title: string;
   category: string;
   description: string;
+  imageUrl?: string;
+  content?: string;
   visitorCount: number;
   status: string;
 }
@@ -107,7 +109,7 @@ export function useCMSData() {
     cachedData = newData;
     
     // Save to DB
-    try {``
+    try {
       const res = await fetch("/api/cms", {
         method: "PUT",
         headers: {

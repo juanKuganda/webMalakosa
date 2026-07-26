@@ -96,6 +96,8 @@ export async function PUT(req: NextRequest) {
           title: t.title,
           category: t.category,
           description: t.description,
+          imageUrl: t.imageUrl,
+          content: t.content,
           visitorCount: t.visitorCount,
           status: t.status,
         }))

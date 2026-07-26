@@ -6,6 +6,7 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MapPin, ArrowRight } from "@phosphor-icons/react";
 import { useCMSData } from "@/lib/cms-store";
+import Link from "next/link";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -53,10 +54,10 @@ export default function AgendaSection() {
             Ikuti berbagai kegiatan komunitas dan festival digital kami.
           </p>
         </div>
-        <a href="#peta" className="text-primary font-bold flex items-center gap-2 hover:underline cursor-pointer group text-sm md:text-base inline-flex">
+        <Link href="/kalender" className="text-primary font-bold flex items-center gap-2 hover:underline cursor-pointer group text-sm md:text-base inline-flex">
           Lihat Kalender Lengkap{" "}
           <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-        </a>
+        </Link>
       </div>
 
       {/* Events Grid */}
