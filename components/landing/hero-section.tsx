@@ -62,7 +62,7 @@ export default function HeroSection() {
             ref={imageRef}
             alt="Malakosa Landscape"
             className="absolute inset-0 w-full h-full object-cover"
-            src={data.heroImageUrl}
+            src="/heroimg.jpeg"
             width={1920}
             height={1080}
             priority

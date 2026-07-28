@@ -23,12 +23,36 @@ const TESTIMONIALS = [
     rating: 5,
     text: "Pantainya luar biasa bersih. Warganya sangat ramah dan terbuka. Pengalaman menginap di homestay digital benar-benar berkesan.",
   },
+  {
+    name: "Budi Santoso",
+    role: "Pengusaha, Surabaya",
+    rating: 5,
+    text: "Layanan publik digitalnya sangat membantu. Mengurus administrasi desa jadi jauh lebih cepat dan transparan. Luar biasa!",
+  },
+  {
+    name: "Elena Rodriguez",
+    role: "Content Creator, Spanyol",
+    rating: 5,
+    text: "Spot fotonya luar biasa indah. Penduduk lokal sangat mendukung kegiatan kreatif kami. Saya pasti akan kembali lagi ke Malakosa.",
+  },
+  {
+    name: "Ahmad Fauzi",
+    role: "Mahasiswa Peneliti",
+    rating: 4,
+    text: "Inisiatif digital desanya bisa menjadi percontohan bagi desa-desa lain di Indonesia. Sangat inspiratif melihat desa yang maju tanpa melupakan tradisi.",
+  },
+  {
+    name: "Siti Aminah",
+    role: "Wisatawan Lokal",
+    rating: 5,
+    text: "Makanan lautnya segar-segar dan murah! Homestay-nya juga bersih dan nyaman. Cocok banget buat liburan keluarga.",
+  },
 ];
 
 export default function TestimoniesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
     const tl = gsap.timeline({
@@ -43,9 +67,9 @@ export default function TestimoniesSection() {
       { opacity: 0, y: 30 },
       { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }
     ).fromTo(
-      gridRef.current?.children || [],
+      scrollRef.current,
       { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, stagger: 0.2, duration: 0.8, ease: "power2.out" },
+      { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" },
       "-=0.5"
     );
   }, { scope: containerRef });
@@ -55,6 +79,16 @@ export default function TestimoniesSection() {
       ref={containerRef}
       className="bg-primary-container rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-16 text-white relative overflow-hidden"
     >
+      <style>{`
+        @keyframes scroll {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-100%); }
+        }
+        .animate-scroll {
+          animation: scroll 40s linear infinite;
+        }
+      `}</style>
+
       {/* Large Quote Watermark background */}
       <div className="absolute top-0 right-0 p-8 md:p-12 opacity-10 pointer-events-none text-white">
         <Quotes size={180} weight="fill" />
@@ -65,23 +99,50 @@ export default function TestimoniesSection() {
           Apa Kata Mereka?
         </h2>
 
-        <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 text-left">
-          {TESTIMONIALS.map((t, idx) => (
-            <div key={idx} className="space-y-4">
-              <div className="flex gap-1 text-secondary-fixed">
-                {[...Array(t.rating)].map((_, i) => (
-                  <Star key={i} size={18} weight="fill" className="text-secondary-fixed" />
-                ))}
-              </div>
-              <p className="font-sans text-base md:text-lg italic leading-relaxed text-white/90">
-                &quot;{t.text}&quot;
-              </p>
-              <div>
-                <p className="font-heading font-bold text-base md:text-lg">{t.name}</p>
-                <p className="font-sans text-xs md:text-sm text-white/60">{t.role}</p>
-              </div>
+        <div 
+          ref={scrollRef} 
+          className="relative w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
+        >
+          <div className="flex w-max hover:[&>div]:[animation-play-state:paused]">
+            {/* First Set */}
+            <div className="flex gap-6 md:gap-10 pr-6 md:pr-10 animate-scroll">
+              {TESTIMONIALS.map((t, idx) => (
+                <div key={idx} className="w-[85vw] md:w-[400px] shrink-0 text-left space-y-4 cursor-pointer">
+                  <div className="flex gap-1 text-secondary-fixed">
+                    {[...Array(t.rating)].map((_, i) => (
+                      <Star key={i} size={18} weight="fill" className="text-secondary-fixed" />
+                    ))}
+                  </div>
+                  <p className="font-sans text-base md:text-lg italic leading-relaxed text-white/90">
+                    &quot;{t.text}&quot;
+                  </p>
+                  <div>
+                    <p className="font-heading font-bold text-base md:text-lg">{t.name}</p>
+                    <p className="font-sans text-xs md:text-sm text-white/60">{t.role}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+            {/* Second Set (Duplicate for seamless loop) */}
+            <div className="flex gap-6 md:gap-10 pr-6 md:pr-10 animate-scroll" aria-hidden="true">
+              {TESTIMONIALS.map((t, idx) => (
+                <div key={idx} className="w-[85vw] md:w-[400px] shrink-0 text-left space-y-4 cursor-pointer">
+                  <div className="flex gap-1 text-secondary-fixed">
+                    {[...Array(t.rating)].map((_, i) => (
+                      <Star key={i} size={18} weight="fill" className="text-secondary-fixed" />
+                    ))}
+                  </div>
+                  <p className="font-sans text-base md:text-lg italic leading-relaxed text-white/90">
+                    &quot;{t.text}&quot;
+                  </p>
+                  <div>
+                    <p className="font-heading font-bold text-base md:text-lg">{t.name}</p>
+                    <p className="font-sans text-xs md:text-sm text-white/60">{t.role}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

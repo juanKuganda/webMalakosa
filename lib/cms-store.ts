@@ -51,7 +51,7 @@ export const DEFAULT_CMS_DATA: VillageCMSData = {
   heroDescription:
     "Harmoni Alam dan Tradisi: Membangun masa depan digital yang berakar pada nilai-nilai agraris dan keberlanjutan lingkungan Sulawesi Tengah.",
   heroImageUrl:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuAiumhETyJOqy-tu6f72izosxebktepHeRY2qE9gqK6sKGGw_eDBNyb76dEehOR-hLTHyQc0rgjJ3iVwFyaIrtdZ6-Xwrxlyy68EnJ0Xu-RVHG78xMzob9r-x6L5rTK1Z2FLrIW9i0A02MNAtbD34Ycxj2IVh42ptj4rg52XECfb3UfaidzLqc39D0VSFzz35Cvn4BYBf-rr-c2TffETrOOVNEBxESzBSDvNxoLaHv812tx4V2dBwhL2A",
+    "/heroimg.jpeg",
   visionTitle: "Visi Masa Depan Digital",
   visionDescription:
     "Menjadi pionir desa digital di Indonesia Timur yang mengintegrasikan teknologi blockchain untuk transparansi desa dan AI untuk efisiensi agrikultur.",
@@ -68,7 +68,6 @@ export const DEFAULT_CMS_DATA: VillageCMSData = {
   tourism: [],
 };
 
-// Module level cache to prevent duplicate fetches from multiple components
 let cmsDataPromise: Promise<VillageCMSData> | null = null;
 let cachedData: VillageCMSData | null = null;
 

@@ -1,7 +1,9 @@
 "use client";
 
 import { ReactLenis, useLenis } from 'lenis/react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
+import gsap from 'gsap';
 
 function AnchorScrolling() {
   const lenis = useLenis();
@@ -34,8 +36,33 @@ function AnchorScrolling() {
 }
 
 export default function SmoothScrolling({ children }: { children: React.ReactNode }) {
+  const lenisRef = useRef<any>(null);
+  const pathname = usePathname();
+  
+  useEffect(() => {
+    function update(time: number) {
+      lenisRef.current?.lenis?.raf(time * 1000);
+    }
+  
+    gsap.ticker.add(update);
+    gsap.ticker.lagSmoothing(0, 0); // Important for Lenis + GSAP sync
+  
+    return () => {
+      gsap.ticker.remove(update);
+    };
+  }, []);
+
+  // Reset scroll to top on route change
+  useEffect(() => {
+    if (lenisRef.current?.lenis) {
+      lenisRef.current.lenis.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname]);
+
   return (
-    <ReactLenis root options={{ lerp: 0.04, smoothWheel: true, wheelMultiplier: 0.8 }}>
+    <ReactLenis ref={lenisRef} autoRaf={false} root options={{ lerp: 0.04, smoothWheel: true, wheelMultiplier: 0.8 }}>
       <AnchorScrolling />
       {children}
     </ReactLenis>

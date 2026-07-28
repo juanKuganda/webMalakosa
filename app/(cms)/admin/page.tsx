@@ -565,6 +565,24 @@ export default function AdminDashboardPage() {
 
                 <div className="bg-[#f6f3f2] p-5 rounded-2xl border border-zinc-200 space-y-3">
                   <label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
+                    URL Gambar Hero (Hero Image)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.heroImageUrl}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, heroImageUrl: e.target.value }))
+                    }
+                    placeholder="/heroimg.avif"
+                    className="w-full bg-white px-4 py-3 rounded-xl border border-zinc-300 font-mono text-sm text-[#012d1d] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
+                  />
+                  <p className="text-[11px] text-[#414844]">
+                    Gunakan path lokal (contoh: <code>/heroimg.avif</code>) atau URL eksternal gambar.
+                  </p>
+                </div>
+
+                <div className="bg-[#f6f3f2] p-5 rounded-2xl border border-zinc-200 space-y-3">
+                  <label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
                     Judul Visi Desa (Bento Grid)
                   </label>
                   <input

@@ -61,11 +61,11 @@ export default function MapSection() {
         </a>
       </div>
 
-      {/* Map Embed */}
       <div ref={mapContainerRef} className="relative w-full rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl bg-surface-variant p-2 md:p-4 border border-outline-variant/30">
+        <div className="absolute inset-0 z-10 hidden md:block"></div>
         <iframe
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d38438.22237499244!2d120.38508940399984!3d-0.9548560284305658!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2d894eef42d5ec9d%3A0xb35db3cea04eb2b9!2sMalakosa%2C%20Kec.%20Balinggi%2C%20Kabupaten%20Parigi%20Moutong%2C%20Sulawesi%20Tengah!5e1!3m2!1sid!2sid!4v1784981115578!5m2!1sid!2sid"
-          className="w-full h-[400px] md:h-[500px] rounded-2xl md:rounded-[2rem] border-0 bg-white"
+          className="w-full h-[400px] md:h-[500px] rounded-2xl md:rounded-[2rem] border-0 bg-white pointer-events-none"
           allowFullScreen={false}
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
