@@ -30,17 +30,16 @@ async function main() {
         heroTagline: "Digital Village Excellence",
         heroDescription:
           "Harmoni Alam dan Tradisi: Membangun masa depan digital yang berakar pada nilai-nilai agraris dan keberlanjutan lingkungan Sulawesi Tengah.",
-        heroImageUrl:
-          "/heroimg.jpeg",
         visionTitle: "Visi Masa Depan Digital",
         visionDescription:
           "Menjadi pionir desa digital di Indonesia Timur yang mengintegrasikan teknologi blockchain untuk transparansi desa dan AI untuk efisiensi agrikultur.",
         population: 1248,
         dusunCount: 5,
+        dusunList: JSON.stringify(["PANTE", "KAILI JAYA", "SINTUVU", "UNA-UNA", "KALBA", "MADURATNA", "INDRA PRASTA", "TAMAN BALI", "TAMASOVO"]),
         kkCount: 312,
         connectivityIndex: 98,
-        agriculturalLand: 42,
-        agriculturalActivePercent: 75,
+        productiveLandArea: 42,
+        productiveActivePercent: 75,
         growthRate: "+2.4% Pertumbuhan Tahun Ini",
       },
     });
@@ -54,30 +53,24 @@ async function main() {
       data: [
         {
           id: "ev-1",
-          date: "15 MEI 2026",
+          date: "2026-05-15",
           title: "Festival Panen Raya",
           desc: "Syukuran hasil bumi dengan pameran teknologi pertanian terbaru desa.",
           location: "Balai Desa Malakosa",
-          borderClass: "border-l-secondary",
-          tagColor: "text-secondary",
         },
         {
           id: "ev-2",
-          date: "22 JUNI 2026",
+          date: "2026-06-22",
           title: "Workshop Coding Remaja",
           desc: "Pelatihan pengembangan aplikasi mobile untuk anak muda desa.",
           location: "Digital Hub Malakosa",
-          borderClass: "border-l-primary",
-          tagColor: "text-primary",
         },
         {
           id: "ev-3",
-          date: "05 JULI 2026",
+          date: "2026-07-05",
           title: "Malakosa Eco-Beach Day",
           desc: "Aksi bersih pantai dan penanaman mangrove bersama wisatawan.",
           location: "Pesisir Barat Pantai",
-          borderClass: "border-l-on-secondary-container",
-          tagColor: "text-on-secondary-container",
         },
       ],
     });

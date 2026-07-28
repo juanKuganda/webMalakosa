@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { AgendaEvent } from "@/lib/cms-store";
+import { AgendaEvent, formatDateToIndonesian } from "@/lib/cms-store";
 import { CaretLeft, CaretRight, MapPinLine } from "@phosphor-icons/react";
 import gsap from "gsap";
 
@@ -37,9 +37,19 @@ export default function CalendarView({ events }: { events: AgendaEvent[] }) {
   };
 
   const getEventsForDay = (day: number) => {
-    const dateStringStr = `${day.toString().padStart(2, "0")} ${monthNames[currentDate.getMonth()].toUpperCase()} ${currentDate.getFullYear()}`;
-    // simple matching, assuming event date string is like "20 AGUSTUS 2026"
-    return events.filter(e => e.date.includes(dateStringStr) || e.date.includes(day.toString() + " " + monthNames[currentDate.getMonth()].toUpperCase()));
+    return events.filter(e => {
+      if (e.date.includes("-")) {
+        const [year, month, d] = e.date.split("-");
+        return (
+          parseInt(d) === day &&
+          parseInt(month) - 1 === currentDate.getMonth() &&
+          parseInt(year) === currentDate.getFullYear()
+        );
+      }
+      // Fallback for legacy string format
+      const dateStringStr = `${day.toString().padStart(2, "0")} ${monthNames[currentDate.getMonth()].toUpperCase()} ${currentDate.getFullYear()}`;
+      return e.date.includes(dateStringStr) || e.date.includes(day.toString() + " " + monthNames[currentDate.getMonth()].toUpperCase());
+    });
   };
 
   return (
@@ -137,7 +147,7 @@ export default function CalendarView({ events }: { events: AgendaEvent[] }) {
             
             <div className="relative z-10">
               <div className="inline-block text-xs font-bold font-mono px-4 py-2 bg-[#a0f4c8] text-[#012d1d] rounded-full mb-6 tracking-widest uppercase shadow-sm">
-                {selectedEvent.date}
+                {formatDateToIndonesian(selectedEvent.date)}
               </div>
               
               <h3 className="text-4xl font-heading font-black text-[#012d1d] mb-4 leading-tight">

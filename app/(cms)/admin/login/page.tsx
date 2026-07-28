@@ -1,5 +1,8 @@
 "use client";
 
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LockKey, User } from "@phosphor-icons/react";
@@ -72,15 +75,15 @@ export default function AdminLoginPage() {
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="space-y-2">
-            <label className="block text-xs font-mono uppercase tracking-widest text-gray-500 pl-2">Username</label>
+            <Label className="block text-xs font-mono uppercase tracking-widest text-gray-500 pl-2">Username</Label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
                 <User size={20} weight="bold" />
               </div>
-              <input
+              <Input
                 type="text"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e: any) => setUsername(e.target.value)}
                 className="w-full pl-12 pr-4 py-4 bg-gray-50 rounded-2xl border border-gray-200 focus:outline-none focus:border-[#012d1d] focus:bg-white text-gray-900 transition-all font-sans"
                 required
                 placeholder="Masukkan username"
@@ -89,15 +92,15 @@ export default function AdminLoginPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-xs font-mono uppercase tracking-widest text-gray-500 pl-2">Password</label>
+            <Label className="block text-xs font-mono uppercase tracking-widest text-gray-500 pl-2">Password</Label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
                 <LockKey size={20} weight="bold" />
               </div>
-              <input
+              <Input
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e: any) => setPassword(e.target.value)}
                 className="w-full pl-12 pr-4 py-4 bg-gray-50 rounded-2xl border border-gray-200 focus:outline-none focus:border-[#012d1d] focus:bg-white text-gray-900 transition-all font-sans"
                 required
                 placeholder="••••••••"

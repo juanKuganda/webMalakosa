@@ -1,46 +1,45 @@
-import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { NextResponse } from 'next/server';
+import { writeFile, mkdir } from 'fs/promises';
+import path from 'path';
 
 export async function POST(request: Request) {
   try {
-    const formData = await request.formData()
-    const file = formData.get('file') as File | null
+    const formData = await request.formData();
+    const file = formData.get('file') as File | null;
 
     if (!file) {
-      return NextResponse.json({ error: 'No file uploaded' }, { status: 400 })
+      return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
 
     // Generate unique filename
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`
-    const ext = file.name.split('.').pop()
-    const filename = `${uniqueSuffix}.${ext}`
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+    const ext = file.name.split('.').pop() || 'jpg';
+    const filename = `${uniqueSuffix}.${ext}`;
 
-    // Upload to Supabase Storage in 'wisata-images' bucket
-    const { error } = await supabase.storage
-      .from('wisata-images')
-      .upload(filename, buffer, {
-        contentType: file.type,
-      })
-
-    if (error) {
-      console.error('Supabase upload error:', error)
-      return NextResponse.json({ error: 'Failed to upload to Supabase' }, { status: 500 })
+    // Upload to local public/uploads folder
+    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+    
+    try {
+      await mkdir(uploadDir, { recursive: true });
+    } catch (e) {
+      // Directory might already exist
     }
 
-    // Get public URL
-    const { data: publicUrlData } = supabase.storage
-      .from('wisata-images')
-      .getPublicUrl(filename)
+    const filePath = path.join(uploadDir, filename);
+    await writeFile(filePath, buffer);
+
+    const publicUrl = `/uploads/${filename}`;
 
     return NextResponse.json({ 
-      url: publicUrlData.publicUrl,
+      url: publicUrl,
       success: true 
-    })
+    });
   } catch (error) {
-    console.error('Upload handler error:', error)
-    return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 })
+    console.error('Upload handler error:', error);
+    return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 });
   }
 }
+

@@ -14,15 +14,23 @@ export async function GET() {
        return NextResponse.json({ error: "CMS Data not found" }, { status: 404 });
     }
 
+    let dusunList: string[] = [];
+    try {
+      dusunList = JSON.parse(settings.dusunList || "[]");
+    } catch (e) {
+      dusunList = [];
+    }
+
     const data = {
       ...settings,
+      dusunList,
       stats: {
         population: settings.population,
         dusunCount: settings.dusunCount,
         kkCount: settings.kkCount,
         connectivityIndex: settings.connectivityIndex,
-        agriculturalLand: settings.agriculturalLand,
-        agriculturalActivePercent: settings.agriculturalActivePercent,
+        productiveLandArea: settings.productiveLandArea,
+        productiveActivePercent: settings.productiveActivePercent,
         growthRate: settings.growthRate,
       },
       agenda,
@@ -57,15 +65,15 @@ export async function PUT(req: NextRequest) {
         heroTitle: data.heroTitle,
         heroTagline: data.heroTagline,
         heroDescription: data.heroDescription,
-        heroImageUrl: data.heroImageUrl,
         visionTitle: data.visionTitle,
         visionDescription: data.visionDescription,
+        dusunList: JSON.stringify(data.dusunList || []),
         population: data.stats.population,
         dusunCount: data.stats.dusunCount,
         kkCount: data.stats.kkCount,
         connectivityIndex: data.stats.connectivityIndex,
-        agriculturalLand: data.stats.agriculturalLand,
-        agriculturalActivePercent: data.stats.agriculturalActivePercent,
+        productiveLandArea: data.stats.productiveLandArea,
+        productiveActivePercent: data.stats.productiveActivePercent,
         growthRate: data.stats.growthRate,
       },
     });
@@ -81,8 +89,6 @@ export async function PUT(req: NextRequest) {
           title: a.title,
           desc: a.desc,
           location: a.location,
-          borderClass: a.borderClass,
-          tagColor: a.tagColor,
         }))
       });
     }

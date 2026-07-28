@@ -5,12 +5,15 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MapPin, ArrowRight } from "@phosphor-icons/react";
-import { useCMSData } from "@/lib/cms-store";
+import { useCMSData, formatDateToIndonesian } from "@/lib/cms-store";
 import Link from "next/link";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
+
+const borderColors = ["border-l-primary", "border-l-secondary", "border-l-on-secondary-container"];
+const textColors = ["text-primary", "text-secondary", "text-on-secondary-container"];
 
 export default function AgendaSection() {
   const { data } = useCMSData();
@@ -62,28 +65,33 @@ export default function AgendaSection() {
 
       {/* Events Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {data.agenda.map((event) => (
-          <div
-            key={event.id}
-            className={`agenda-card bento-card p-8 rounded-[2rem] border-l-8 ${event.borderClass || "border-l-primary"} flex flex-col justify-between min-h-[260px]`}
-          >
-            <div>
-              <span className={`font-mono text-xs font-bold ${event.tagColor || "text-primary"}`}>
-                {event.date}
-              </span>
-              <h4 className="font-heading text-xl md:text-2xl font-bold mt-4 mb-3 text-primary">
-                {event.title}
-              </h4>
-              <p className="text-on-surface-variant text-sm leading-relaxed mb-6">
-                {event.desc}
-              </p>
+        {data.agenda.map((event, index) => {
+          const borderColor = borderColors[index % borderColors.length];
+          const textColor = textColors[index % textColors.length];
+          
+          return (
+            <div
+              key={event.id}
+              className={`agenda-card bento-card p-8 rounded-[2rem] border-l-8 ${borderColor} flex flex-col justify-between min-h-[260px]`}
+            >
+              <div>
+                <span className={`font-mono text-xs font-bold ${textColor} uppercase`}>
+                  {formatDateToIndonesian(event.date)}
+                </span>
+                <h4 className="font-heading text-xl md:text-2xl font-bold mt-4 mb-3 text-primary">
+                  {event.title}
+                </h4>
+                <p className="text-on-surface-variant text-sm leading-relaxed mb-6">
+                  {event.desc}
+                </p>
+              </div>
+              <div className="flex items-center gap-2 text-primary font-bold text-xs md:text-sm mt-auto">
+                <MapPin size={16} />
+                <span>{event.location}</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2 text-primary font-bold text-xs md:text-sm mt-auto">
-              <MapPin size={16} />
-              <span>{event.location}</span>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

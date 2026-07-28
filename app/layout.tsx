@@ -48,14 +48,13 @@ export default function RootLayout({
     <html
       lang="id"
       className={cn(
-        "h-full",
         "antialiased",
         plusJakartaSans.variable,
         workSans.variable,
         jetbrainsMono.variable
       )}
     >
-      <body className="min-h-full flex flex-col bg-background text-on-surface">
+      <body className="flex flex-col bg-background text-on-surface">
         <SmoothScrolling>
           {children}
         </SmoothScrolling>

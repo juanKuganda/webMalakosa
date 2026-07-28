@@ -20,17 +20,17 @@ model CmsSettings {
   heroTitle         String
   heroTagline       String
   heroDescription   String
-  heroImageUrl      String
   visionTitle       String
   visionDescription String
   
   // Stats
   population                Int
   dusunCount                Int
+  dusunList                 String @default("[\"PANTE\", \"KAILI JAYA\", \"SINTUVU\", \"UNA-UNA\", \"KALBA\", \"MADURATNA\", \"INDRA PRASTA\", \"TAMAN BALI\", \"TAMASOVO\"]")
   kkCount                   Int
   connectivityIndex         Int
-  agriculturalLand          Int
-  agriculturalActivePercent Int
+  productiveLandArea        Int
+  productiveActivePercent   Int
   growthRate                String
   
   createdAt DateTime @default(now())
@@ -43,8 +43,6 @@ model AgendaEvent {
   title       String
   desc        String
   location    String
-  borderClass String
-  tagColor    String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

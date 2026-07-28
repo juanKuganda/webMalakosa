@@ -1,5 +1,8 @@
 "use client";
 
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -32,12 +35,13 @@ import {
   Sparkle,
   SlidersHorizontal,
   Compass,
+  MapPin,
 } from "@phosphor-icons/react";
 
 export default function AdminDashboardPage() {
   const { data: storedData, updateData } = useCMSData();
   const [formData, setFormData] = useState<VillageCMSData>(storedData);
-  const [activeTab, setActiveTab] = useState<"stats" | "hero" | "agenda" | "tourism">("stats");
+  const [activeTab, setActiveTab] = useState<"stats" | "hero" | "dusun" | "agenda" | "tourism">("stats");
   const router = useRouter();
 
   // New agenda form state
@@ -52,6 +56,8 @@ export default function AdminDashboardPage() {
     desc: "",
     location: "",
   });
+
+  const [newDusun, setNewDusun] = useState("");
 
   const [prevStored, setPrevStored] = useState(storedData);
 
@@ -71,10 +77,17 @@ export default function AdminDashboardPage() {
   };
 
   const handleSave = () => {
-    updateData(formData);
+    const finalData = {
+      ...formData,
+      stats: {
+        ...formData.stats,
+        dusunCount: formData.dusunList?.length || 0,
+      }
+    };
+    updateData(finalData);
+    setFormData(finalData);
     toast.success("Perubahan berhasil disimpan! Landing page telah ter-update secara otomatis.");
   };
-
   const handleLogout = async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
@@ -95,8 +108,6 @@ export default function AdminDashboardPage() {
       title: newAgenda.title,
       desc: newAgenda.desc,
       location: newAgenda.location || "Desa Malakosa",
-      borderClass: "border-l-primary",
-      tagColor: "text-primary",
     };
 
     setFormData((prev) => ({
@@ -114,11 +125,76 @@ export default function AdminDashboardPage() {
     }));
   };
 
+  const handleAddDusun = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = newDusun.trim().toUpperCase();
+    if (!trimmed) return;
+    
+    // Ensure dusunList is an array
+    const currentList = formData.dusunList || [];
+    
+    if (currentList.includes(trimmed)) {
+      toast.error(`Dusun ${trimmed} sudah ada di daftar!`);
+      return;
+    }
+
+    const updatedList = [...currentList, trimmed];
+    setFormData((prev) => ({
+      ...prev,
+      dusunList: updatedList,
+      stats: {
+        ...prev.stats,
+        dusunCount: updatedList.length,
+      },
+    }));
+    setNewDusun("");
+    toast.success(`Dusun ${trimmed} berhasil ditambahkan.`);
+  };
+
+  const handleDeleteDusun = (name: string) => {
+    const currentList = formData.dusunList || [];
+    const updatedList = currentList.filter((d) => d !== name);
+    setFormData((prev) => ({
+      ...prev,
+      dusunList: updatedList,
+      stats: {
+        ...prev.stats,
+        dusunCount: updatedList.length,
+      },
+    }));
+    toast.success(`Dusun ${name} berhasil dihapus.`);
+  };
+
   const handleTourismChange = (id: string, field: keyof TourismSpot, value: string | number) => {
     setFormData(prev => ({
       ...prev,
       tourism: prev.tourism.map(t => t.id === id ? { ...t, [field]: value } : t)
     }));
+  };
+
+  const handleAddTourism = () => {
+    const newSpot: TourismSpot = {
+      id: `tourism-${Date.now()}`,
+      title: "Destinasi Baru",
+      category: "WISATA BAHARI",
+      description: "Deskripsi singkat...",
+      content: "",
+      visitorCount: 0,
+      status: "Beroperasi",
+    };
+    setFormData(prev => ({
+      ...prev,
+      tourism: [...prev.tourism, newSpot]
+    }));
+    toast.success("Destinasi wisata baru ditambahkan");
+  };
+
+  const handleDeleteTourism = (id: string) => {
+    setFormData(prev => ({
+      ...prev,
+      tourism: prev.tourism.filter(t => t.id !== id)
+    }));
+    toast.success("Destinasi wisata dihapus");
   };
 
   const handleUploadImage = async (id: string, file: File) => {
@@ -223,7 +299,7 @@ export default function AdminDashboardPage() {
                 Wilayah & KK
               </span>
               <div className="font-heading text-2xl font-black text-[#012d1d]">
-                {formData.stats.dusunCount} <span className="text-xs font-medium text-[#414844]">Dusun</span> /{" "}
+                {formData.dusunList?.length || 0} <span className="text-xs font-medium text-[#414844]">Dusun</span> /{" "}
                 {formData.stats.kkCount} <span className="text-xs font-medium text-[#414844]">KK</span>
               </div>
               <span className="text-[11px] text-[#414844] font-semibold mt-1 block">
@@ -242,11 +318,11 @@ export default function AdminDashboardPage() {
                 Lahan Sawah Organik
               </span>
               <div className="font-heading text-3xl font-black text-[#012d1d]">
-                {formData.stats.agriculturalLand}{" "}
+                {formData.stats.productiveLandArea}{" "}
                 <span className="text-xs font-normal text-[#414844]">Ha</span>
               </div>
               <span className="text-[11px] text-[#0e6c4a] font-semibold mt-1 block">
-                {formData.stats.agriculturalActivePercent}% Sistem IoT Aktif
+                {formData.stats.productiveActivePercent}% Sistem IoT Aktif
               </span>
             </div>
             <div className="w-12 h-12 bg-[#a0f4c8]/30 text-[#0e6c4a] rounded-2xl flex items-center justify-center font-bold">
@@ -298,6 +374,17 @@ export default function AdminDashboardPage() {
             <span>Visi & Hero Section</span>
           </button>
           <button
+            onClick={() => setActiveTab("dusun")}
+            className={`flex items-center gap-2 px-5 py-3 rounded-t-2xl font-bold text-sm transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === "dusun"
+                ? "bg-[#012d1d] text-white shadow-md"
+                : "bg-white text-[#414844] hover:bg-zinc-100"
+            }`}
+          >
+            <MapPin size={18} />
+            <span>Daftar Dusun ({formData.dusunList?.length || 0})</span>
+          </button>
+          <button
             onClick={() => setActiveTab("agenda")}
             className={`flex items-center gap-2 px-5 py-3 rounded-t-2xl font-bold text-sm transition-all cursor-pointer whitespace-nowrap ${
               activeTab === "agenda"
@@ -338,13 +425,13 @@ export default function AdminDashboardPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Population input */}
                 <div className="bg-[#f6f3f2] p-5 rounded-2xl border border-zinc-200 space-y-2">
-                  <label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
+                  <Label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
                     Total Populasi (Jiwa)
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="number"
                     value={formData.stats.population}
-                    onChange={(e) => handleStatChange("population", Number(e.target.value))}
+                    onChange={(e: any) => handleStatChange("population", Number(e.target.value))}
                     className="w-full bg-white px-4 py-3 rounded-xl border border-zinc-300 font-heading text-lg font-bold text-[#012d1d] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
                   />
                   <p className="text-[11px] text-[#414844]">
@@ -353,30 +440,30 @@ export default function AdminDashboardPage() {
                 </div>
 
                 {/* Dusun count input */}
-                <div className="bg-[#f6f3f2] p-5 rounded-2xl border border-zinc-200 space-y-2">
-                  <label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
-                    Jumlah Wilayah Dusun
-                  </label>
-                  <input
+                <div className="bg-[#f6f3f2] p-5 rounded-2xl border border-zinc-200 space-y-2 opacity-80">
+                  <Label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
+                    Jumlah Wilayah Dusun (Otomatis)
+                  </Label>
+                  <Input
                     type="number"
-                    value={formData.stats.dusunCount}
-                    onChange={(e) => handleStatChange("dusunCount", Number(e.target.value))}
-                    className="w-full bg-white px-4 py-3 rounded-xl border border-zinc-300 font-heading text-lg font-bold text-[#012d1d] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
+                    value={formData.dusunList?.length || 0}
+                    disabled
+                    className="w-full bg-zinc-100 px-4 py-3 rounded-xl border border-zinc-200 font-heading text-lg font-bold text-zinc-500 cursor-not-allowed"
                   />
                   <p className="text-[11px] text-[#414844]">
-                    Jumlah unit administratif dusun di desa.
+                    Nilai ini dihitung otomatis berdasarkan jumlah dusun di tab <strong>Daftar Dusun</strong>.
                   </p>
                 </div>
 
                 {/* KK count input */}
                 <div className="bg-[#f6f3f2] p-5 rounded-2xl border border-zinc-200 space-y-2">
-                  <label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
+                  <Label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
                     Jumlah Kepala Keluarga (KK)
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="number"
                     value={formData.stats.kkCount}
-                    onChange={(e) => handleStatChange("kkCount", Number(e.target.value))}
+                    onChange={(e: any) => handleStatChange("kkCount", Number(e.target.value))}
                     className="w-full bg-white px-4 py-3 rounded-xl border border-zinc-300 font-heading text-lg font-bold text-[#012d1d] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
                   />
                   <p className="text-[11px] text-[#414844]">
@@ -387,19 +474,19 @@ export default function AdminDashboardPage() {
                 {/* Jumlah Agama slider */}
                 <div className="bg-[#f6f3f2] p-5 rounded-2xl border border-zinc-200 space-y-2">
                   <div className="flex justify-between items-center">
-                    <label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
+                    <Label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
                       Jumlah Agama Terdaftar
-                    </label>
+                    </Label>
                     <span className="font-heading font-black text-lg text-[#0e6c4a]">
                       {formData.stats.connectivityIndex}
                     </span>
                   </div>
-                  <input
+                  <Input
                     type="range"
                     min="1"
                     max="6"
                     value={formData.stats.connectivityIndex}
-                    onChange={(e) => handleStatChange("connectivityIndex", Number(e.target.value))}
+                    onChange={(e: any) => handleStatChange("connectivityIndex", Number(e.target.value))}
                     className="w-full accent-[#0e6c4a] cursor-pointer"
                   />
                   <p className="text-[11px] text-[#414844]">
@@ -409,13 +496,13 @@ export default function AdminDashboardPage() {
 
                 {/* Agricultural land input */}
                 <div className="bg-[#f6f3f2] p-5 rounded-2xl border border-zinc-200 space-y-2">
-                  <label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
+                  <Label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
                     Luas Lahan Produktif (Hektar)
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="number"
-                    value={formData.stats.agriculturalLand}
-                    onChange={(e) => handleStatChange("agriculturalLand", Number(e.target.value))}
+                    value={formData.stats.productiveLandArea}
+                    onChange={(e: any) => handleStatChange("productiveLandArea", Number(e.target.value))}
                     className="w-full bg-white px-4 py-3 rounded-xl border border-zinc-300 font-heading text-lg font-bold text-[#012d1d] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
                   />
                   <p className="text-[11px] text-[#414844]">
@@ -426,20 +513,20 @@ export default function AdminDashboardPage() {
                 {/* Agricultural active % input */}
                 <div className="bg-[#f6f3f2] p-5 rounded-2xl border border-zinc-200 space-y-2">
                   <div className="flex justify-between items-center">
-                    <label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
+                    <Label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
                       Lahan Produktif Aktif (%)
-                    </label>
+                    </Label>
                     <span className="font-heading font-black text-lg text-[#0e6c4a]">
-                      {formData.stats.agriculturalActivePercent}%
+                      {formData.stats.productiveActivePercent}%
                     </span>
                   </div>
-                  <input
+                  <Input
                     type="range"
                     min="10"
                     max="100"
-                    value={formData.stats.agriculturalActivePercent}
-                    onChange={(e) =>
-                      handleStatChange("agriculturalActivePercent", Number(e.target.value))
+                    value={formData.stats.productiveActivePercent}
+                    onChange={(e: any) =>
+                      handleStatChange("productiveActivePercent", Number(e.target.value))
                     }
                     className="w-full accent-[#0e6c4a] cursor-pointer"
                   />
@@ -450,13 +537,13 @@ export default function AdminDashboardPage() {
 
                 {/* Growth rate text */}
                 <div className="bg-[#f6f3f2] p-5 rounded-2xl border border-zinc-200 space-y-2 md:col-span-2">
-                  <label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
+                  <Label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
                     Catatan Pertumbuhan (Growth Note)
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="text"
                     value={formData.stats.growthRate}
-                    onChange={(e) => handleStatChange("growthRate", e.target.value)}
+                    onChange={(e: any) => handleStatChange("growthRate", e.target.value)}
                     className="w-full bg-white px-4 py-3 rounded-xl border border-zinc-300 text-sm font-semibold text-[#012d1d] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
                   />
                   <p className="text-[11px] text-[#414844]">
@@ -522,13 +609,13 @@ export default function AdminDashboardPage() {
 
               <div className="space-y-6">
                 <div className="bg-[#f6f3f2] p-5 rounded-2xl border border-zinc-200 space-y-3">
-                  <label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
+                  <Label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
                     Judul Utama Hero (Hero Title)
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="text"
                     value={formData.heroTitle}
-                    onChange={(e) =>
+                    onChange={(e: any) =>
                       setFormData((prev) => ({ ...prev, heroTitle: e.target.value }))
                     }
                     className="w-full bg-white px-4 py-3 rounded-xl border border-zinc-300 font-heading text-lg font-extrabold text-[#012d1d] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
@@ -536,13 +623,13 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div className="bg-[#f6f3f2] p-5 rounded-2xl border border-zinc-200 space-y-3">
-                  <label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
+                  <Label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
                     Tagline Subtitle Hero
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="text"
                     value={formData.heroTagline}
-                    onChange={(e) =>
+                    onChange={(e: any) =>
                       setFormData((prev) => ({ ...prev, heroTagline: e.target.value }))
                     }
                     className="w-full bg-white px-4 py-3 rounded-xl border border-zinc-300 font-mono text-sm font-semibold text-[#0e6c4a] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
@@ -550,45 +637,29 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div className="bg-[#f6f3f2] p-5 rounded-2xl border border-zinc-200 space-y-3">
-                  <label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
+                  <Label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
                     Deskripsi Ringkas Hero
-                  </label>
-                  <textarea
+                  </Label>
+                  <Textarea
                     rows={3}
                     value={formData.heroDescription}
-                    onChange={(e) =>
+                    onChange={(e: any) =>
                       setFormData((prev) => ({ ...prev, heroDescription: e.target.value }))
                     }
                     className="w-full bg-white px-4 py-3 rounded-xl border border-zinc-300 text-sm text-[#1c1b1b] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
                   />
                 </div>
 
-                <div className="bg-[#f6f3f2] p-5 rounded-2xl border border-zinc-200 space-y-3">
-                  <label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
-                    URL Gambar Hero (Hero Image)
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.heroImageUrl}
-                    onChange={(e) =>
-                      setFormData((prev) => ({ ...prev, heroImageUrl: e.target.value }))
-                    }
-                    placeholder="/heroimg.avif"
-                    className="w-full bg-white px-4 py-3 rounded-xl border border-zinc-300 font-mono text-sm text-[#012d1d] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
-                  />
-                  <p className="text-[11px] text-[#414844]">
-                    Gunakan path lokal (contoh: <code>/heroimg.avif</code>) atau URL eksternal gambar.
-                  </p>
-                </div>
+                
 
                 <div className="bg-[#f6f3f2] p-5 rounded-2xl border border-zinc-200 space-y-3">
-                  <label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
+                  <Label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
                     Judul Visi Desa (Bento Grid)
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="text"
                     value={formData.visionTitle}
-                    onChange={(e) =>
+                    onChange={(e: any) =>
                       setFormData((prev) => ({ ...prev, visionTitle: e.target.value }))
                     }
                     className="w-full bg-white px-4 py-3 rounded-xl border border-zinc-300 font-heading text-lg font-bold text-[#012d1d] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
@@ -596,18 +667,99 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div className="bg-[#f6f3f2] p-5 rounded-2xl border border-zinc-200 space-y-3">
-                  <label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
+                  <Label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
                     Deskripsi Visi Desa (Bento Grid)
-                  </label>
-                  <textarea
+                  </Label>
+                  <Textarea
                     rows={3}
                     value={formData.visionDescription}
-                    onChange={(e) =>
+                    onChange={(e: any) =>
                       setFormData((prev) => ({ ...prev, visionDescription: e.target.value }))
                     }
                     className="w-full bg-white px-4 py-3 rounded-xl border border-zinc-300 text-sm text-[#1c1b1b] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
                   />
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: DUSUN */}
+          {activeTab === "dusun" && (
+            <div className="space-y-8 animate-in fade-in duration-300">
+              <div>
+                <h3 className="font-heading text-xl font-bold text-[#012d1d] mb-1">
+                  Kelola Wilayah Dusun Desa Malakosa
+                </h3>
+                <p className="text-xs text-[#414844]">
+                  Daftar dusun di bawah ini digunakan untuk pemetaan administratif desa dan penentuan lokasi agenda. Jumlah dusun di Statistik Utama akan ter-update otomatis secara real-time.
+                </p>
+              </div>
+
+              {/* Form Tambah Dusun */}
+              <form onSubmit={handleAddDusun} className="bg-[#f6f3f2] p-6 rounded-3xl border border-zinc-200 space-y-4">
+                <h4 className="font-heading font-bold text-sm text-[#012d1d] flex items-center gap-2">
+                  <Plus size={18} className="text-[#0e6c4a]" /> Tambah Dusun Baru
+                </h4>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex-1">
+                    <Input
+                      type="text"
+                      placeholder="Masukkan nama dusun (contoh: Pante)"
+                      value={newDusun}
+                      onChange={(e: any) => setNewDusun(e.target.value)}
+                      className="bg-white px-4 py-3 rounded-xl border border-zinc-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#0e6c4a] w-full"
+                      required
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="bg-[#0e6c4a] hover:bg-[#19724f] text-white text-xs font-bold px-5 py-3 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <Plus size={16} />
+                    <span>Tambah Dusun</span>
+                  </button>
+                </div>
+              </form>
+
+              {/* List Dusun */}
+              <div className="space-y-4">
+                <h4 className="font-heading text-sm font-bold text-[#012d1d]">
+                  Daftar Nama Dusun Saat Ini ({formData.dusunList?.length || 0}):
+                </h4>
+                {(!formData.dusunList || formData.dusunList.length === 0) ? (
+                  <div className="text-center py-12 text-zinc-400 bg-[#f6f3f2] rounded-3xl border border-dashed border-zinc-200">
+                    Belum ada dusun terdaftar. Tambahkan dusun baru di atas.
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    {formData.dusunList.map((dusun) => (
+                      <div
+                        key={dusun}
+                        className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm flex justify-between items-center gap-4 group hover:border-[#0e6c4a]/30 transition-all"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl bg-[#a0f4c8]/30 flex items-center justify-center text-[#0e6c4a]">
+                            <MapPin size={18} />
+                          </div>
+                          <div>
+                            <span className="font-mono text-xs font-bold text-[#0e6c4a]">WILAYAH DUSUN</span>
+                            <h5 className="font-heading font-bold text-base text-[#012d1d] uppercase">
+                              {dusun}
+                            </h5>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteDusun(dusun)}
+                          className="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded-xl border border-red-200 transition-colors shrink-0 cursor-pointer"
+                          title="Hapus Dusun"
+                        >
+                          <Trash size={18} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -630,34 +782,43 @@ export default function AdminDashboardPage() {
                   <Plus size={18} className="text-[#0e6c4a]" /> Tambah Agenda Baru
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input
+                  <Input
                     type="text"
                     placeholder="Tanggal (contoh: 20 AGUSTUS 2026)"
                     value={newAgenda.date}
-                    onChange={(e) => setNewAgenda({ ...newAgenda, date: e.target.value })}
+                    onChange={(e: any) => setNewAgenda({ ...newAgenda, date: e.target.value })}
                     className="bg-white px-4 py-3 rounded-xl border border-zinc-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
                     required
                   />
-                  <input
+                  <Input
                     type="text"
                     placeholder="Nama / Judul Kegiatan"
                     value={newAgenda.title}
-                    onChange={(e) => setNewAgenda({ ...newAgenda, title: e.target.value })}
+                    onChange={(e: any) => setNewAgenda({ ...newAgenda, title: e.target.value })}
                     className="bg-white px-4 py-3 rounded-xl border border-zinc-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
                     required
                   />
-                  <input
-                    type="text"
-                    placeholder="Lokasi (contoh: Balai Desa Malakosa)"
-                    value={newAgenda.location}
-                    onChange={(e) => setNewAgenda({ ...newAgenda, location: e.target.value })}
-                    className="bg-white px-4 py-3 rounded-xl border border-zinc-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
-                  />
-                  <input
+                  <div>
+                    <Input
+                      type="text"
+                      list="dusun-options"
+                      placeholder="Lokasi (Ketik atau Pilih dari dropdown)"
+                      value={newAgenda.location}
+                      onChange={(e: any) => setNewAgenda({ ...newAgenda, location: e.target.value })}
+                      className="bg-white px-4 py-3 rounded-xl border border-zinc-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
+                      required
+                    />
+                    <datalist id="dusun-options">
+                      {formData.dusunList?.map((dusun) => (
+                        <option key={dusun} value={`Dusun ${dusun}`} />
+                      ))}
+                    </datalist>
+                  </div>
+                  <Input
                     type="text"
                     placeholder="Deskripsi singkat kegiatan"
                     value={newAgenda.desc}
-                    onChange={(e) => setNewAgenda({ ...newAgenda, desc: e.target.value })}
+                    onChange={(e: any) => setNewAgenda({ ...newAgenda, desc: e.target.value })}
                     className="bg-white px-4 py-3 rounded-xl border border-zinc-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
                   />
                 </div>
@@ -712,64 +873,85 @@ export default function AdminDashboardPage() {
           {/* TAB 4: TOURISM */}
           {activeTab === "tourism" && (
             <div className="space-y-8">
-              <div>
-                <h3 className="font-heading text-xl font-bold text-[#012d1d] mb-1">
-                  Kelola Destinasi Wisata Bahari & Ekowisata
-                </h3>
-                <p className="text-xs text-[#414844]">
-                  Pantau dan update status destinasi ekowisata di Desa Malakosa.
-                </p>
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="font-heading text-xl font-bold text-[#012d1d] mb-1">
+                    Kelola Destinasi Wisata Bahari & Ekowisata
+                  </h3>
+                  <p className="text-xs text-[#414844]">
+                    Pantau dan update status destinasi ekowisata di Desa Malakosa.
+                  </p>
+                </div>
+                <button
+                  onClick={handleAddTourism}
+                  className="bg-[#0e6c4a] hover:bg-[#19724f] text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 transition-colors shadow-sm"
+                >
+                  <Plus size={16} />
+                  <span>Tambah Destinasi</span>
+                </button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {formData.tourism.map((spot) => (
                   <div key={spot.id} className="bg-[#f6f3f2] p-6 rounded-2xl border border-zinc-200 space-y-4">
                     <div className="flex justify-between items-start mb-2">
-                      <span className="font-mono text-[10px] uppercase font-bold text-[#0e6c4a] bg-[#a0f4c8]/40 px-2.5 py-1 rounded-full border border-[#0e6c4a]/20">
-                        {spot.category}
-                      </span>
-                      <input
-                        type="text"
-                        value={spot.status}
-                        onChange={(e) => handleTourismChange(spot.id, "status", e.target.value)}
-                        className="text-xs font-semibold bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full border border-emerald-300 w-24 text-center focus:outline-none"
-                      />
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="text"
+                          value={spot.category}
+                          onChange={(e: any) => handleTourismChange(spot.id, "category", e.target.value)}
+                          className="h-8 w-auto min-w-[120px] font-mono text-[10px] uppercase font-bold text-[#0e6c4a] bg-[#a0f4c8]/40 px-2.5 py-1 rounded-full border border-[#0e6c4a]/20 focus:outline-none focus:ring-1 focus:ring-[#0e6c4a]"
+                        />
+                        <Input
+                          type="text"
+                          value={spot.status}
+                          onChange={(e: any) => handleTourismChange(spot.id, "status", e.target.value)}
+                          className="h-8 w-auto min-w-[130px] font-sans text-[11px] font-semibold bg-emerald-100 text-emerald-800 px-3 py-0 rounded-full border border-emerald-300 text-center focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        />
+                      </div>
+                      <button
+                        onClick={() => handleDeleteTourism(spot.id)}
+                        className="text-red-500 hover:text-red-700 bg-red-50 p-1.5 rounded-lg border border-red-200 transition-colors cursor-pointer"
+                        title="Hapus Destinasi"
+                      >
+                        <Trash size={16} />
+                      </button>
                     </div>
                     
-                    <input
+                    <Input
                       type="text"
                       value={spot.title}
-                      onChange={(e) => handleTourismChange(spot.id, "title", e.target.value)}
+                      onChange={(e: any) => handleTourismChange(spot.id, "title", e.target.value)}
                       className="w-full bg-white px-3 py-2 rounded-lg border border-zinc-300 font-heading font-bold text-lg text-[#012d1d] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
                     />
 
-                    <textarea
+                    <Textarea
                       rows={2}
                       value={spot.description}
-                      onChange={(e) => handleTourismChange(spot.id, "description", e.target.value)}
+                      onChange={(e: any) => handleTourismChange(spot.id, "description", e.target.value)}
                       placeholder="Deskripsi singkat..."
                       className="w-full bg-white px-3 py-2 rounded-lg border border-zinc-300 text-xs text-[#414844] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
                     />
 
-                    <textarea
+                    <Textarea
                       rows={4}
                       value={spot.content || ""}
-                      onChange={(e) => handleTourismChange(spot.id, "content", e.target.value)}
+                      onChange={(e: any) => handleTourismChange(spot.id, "content", e.target.value)}
                       placeholder="Konten detail panjang..."
                       className="w-full bg-white px-3 py-2 rounded-lg border border-zinc-300 text-xs text-[#414844] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
                     />
 
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-[#012d1d]">Gambar Wisata</label>
+                      <Label className="text-xs font-bold text-[#012d1d]">Gambar Wisata</Label>
                       {spot.imageUrl && (
                         <div className="w-full h-32 rounded-lg overflow-hidden border border-zinc-200 mb-2 relative">
                           <Image src={spot.imageUrl} alt={spot.title} fill className="object-cover" />
                         </div>
                       )}
-                      <input
+                      <Input
                         type="file"
                         accept="image/*"
-                        onChange={(e) => {
+                        onChange={(e: any) => {
                           const file = e.target.files?.[0];
                           if (file) handleUploadImage(spot.id, file);
                         }}
@@ -779,10 +961,10 @@ export default function AdminDashboardPage() {
 
                     <div className="pt-2 flex justify-between items-center text-xs font-bold text-[#012d1d]">
                       <span>Pengunjung Bulan Ini:</span>
-                      <input
+                      <Input
                         type="number"
                         value={spot.visitorCount}
-                        onChange={(e) => handleTourismChange(spot.id, "visitorCount", Number(e.target.value))}
+                        onChange={(e: any) => handleTourismChange(spot.id, "visitorCount", Number(e.target.value))}
                         className="w-24 bg-white px-2 py-1 rounded-md border border-zinc-300 font-heading text-base font-black text-[#0e6c4a] text-right focus:outline-none"
                       />
                     </div>

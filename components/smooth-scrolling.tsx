@@ -4,9 +4,10 @@ import { ReactLenis, useLenis } from 'lenis/react';
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 function AnchorScrolling() {
-  const lenis = useLenis();
+  const lenis = useLenis(ScrollTrigger.update);
 
   useEffect(() => {
     const handleHashChange = (e: MouseEvent) => {
@@ -40,15 +41,23 @@ export default function SmoothScrolling({ children }: { children: React.ReactNod
   const pathname = usePathname();
   
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
     function update(time: number) {
       lenisRef.current?.lenis?.raf(time * 1000);
     }
   
     gsap.ticker.add(update);
     gsap.ticker.lagSmoothing(0, 0); // Important for Lenis + GSAP sync
+
+    // Refresh ScrollTrigger after a slight delay to account for CMS data and image loading
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 500);
   
     return () => {
       gsap.ticker.remove(update);
+      clearTimeout(timer);
     };
   }, []);
 
