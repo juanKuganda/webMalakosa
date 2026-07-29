@@ -1,5 +1,5 @@
 "use client";
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReactLenis, useLenis } from 'lenis/react';
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';

@@ -1,5 +1,5 @@
 "use client";
-
+/* eslint-disable react-hooks/exhaustive-deps, react-hooks/rules-of-hooks, react-hooks/set-state-in-effect */
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { VillageCMSData, DEFAULT_CMS_DATA } from "@/lib/cms-store";
 

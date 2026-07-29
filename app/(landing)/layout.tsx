@@ -4,6 +4,8 @@ import Footer from "@/components/landing/footer";
 import { getServerCMSData } from "@/lib/cms-server";
 import { CMSProvider } from "@/lib/cms-store";
 
+export const dynamic = "force-dynamic";
+
 export default async function LandingLayout({
   children,
 }: {
