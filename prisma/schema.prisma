@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model CmsSettings {
+  id                String   @id @default(cuid())
+  heroTitle         String
+  heroTagline       String
+  heroDescription   String
+  visionTitle       String
+  visionDescription String
+  
+  // Stats
+  population                Int
+  dusunCount                Int
+  dusunList                 String @default("[\"PANTE\", \"KAILI JAYA\", \"SINTUVU\", \"UNA-UNA\", \"KALBA\", \"MADURATNA\", \"INDRA PRASTA\", \"TAMAN BALI\", \"TAMASOVO\"]")
+  kkCount                   Int
+  connectivityIndex         Int
+  productiveLandArea        Int
+  productiveActivePercent   Int
+  growthRate                String
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AgendaEvent {
+  id          String   @id @default(cuid())
+  date        String
+  title       String
+  desc        String
+  location    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TourismSpot {
+  id           String   @id @default(cuid())
+  title        String
+  category     String
+  description  String
+  imageUrl     String?
+  content      String?
+  visitorCount Int
+  status       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
