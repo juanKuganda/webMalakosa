@@ -58,57 +58,68 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: "Settings not found" }, { status: 404 });
     }
 
-    // Update settings
-    await prisma.cmsSettings.update({
-      where: { id: currentSettings.id },
-      data: {
-        heroTitle: data.heroTitle,
-        heroTagline: data.heroTagline,
-        heroDescription: data.heroDescription,
-        visionTitle: data.visionTitle,
-        visionDescription: data.visionDescription,
-        dusunList: JSON.stringify(data.dusunList || []),
-        population: data.stats.population,
-        dusunCount: data.stats.dusunCount,
-        kkCount: data.stats.kkCount,
-        connectivityIndex: data.stats.connectivityIndex,
-        productiveLandArea: data.stats.productiveLandArea,
-        productiveActivePercent: data.stats.productiveActivePercent,
-        growthRate: data.stats.growthRate,
-      },
+    await prisma.$transaction(async (tx) => {
+      // Update settings
+      await tx.cmsSettings.update({
+        where: { id: currentSettings.id },
+        data: {
+          heroTitle: data.heroTitle,
+          heroTagline: data.heroTagline,
+          heroDescription: data.heroDescription,
+          visionTitle: data.visionTitle,
+          visionDescription: data.visionDescription,
+          dusunList: JSON.stringify(data.dusunList || []),
+          population: data.stats.population,
+          dusunCount: data.stats.dusunCount,
+          kkCount: data.stats.kkCount,
+          connectivityIndex: data.stats.connectivityIndex,
+          productiveLandArea: data.stats.productiveLandArea,
+          productiveActivePercent: data.stats.productiveActivePercent,
+          growthRate: data.stats.growthRate,
+        },
+      });
+
+      // Handle agenda updates efficiently
+      const existingAgendas = await tx.agendaEvent.findMany({ select: { id: true } });
+      const incomingAgendaIds = (data.agenda || []).map((a: AgendaEvent) => a.id).filter(Boolean);
+      
+      const agendasToDelete = existingAgendas.filter(a => !incomingAgendaIds.includes(a.id));
+      if (agendasToDelete.length > 0) {
+        await tx.agendaEvent.deleteMany({ where: { id: { in: agendasToDelete.map(a => a.id) } } });
+      }
+
+      for (const a of (data.agenda || [])) {
+        if (a.id) {
+          await tx.agendaEvent.upsert({
+            where: { id: a.id },
+            update: { date: a.date, title: a.title, desc: a.desc, location: a.location },
+            create: { id: a.id, date: a.date, title: a.title, desc: a.desc, location: a.location },
+          });
+        }
+      }
+
+      // Handle tourism updates efficiently
+      const existingTourism = await tx.tourismSpot.findMany({ select: { id: true } });
+      const incomingTourismIds = (data.tourism || []).map((t: TourismSpot) => t.id).filter(Boolean);
+      
+      const tourismToDelete = existingTourism.filter(t => !incomingTourismIds.includes(t.id));
+      if (tourismToDelete.length > 0) {
+        await tx.tourismSpot.deleteMany({ where: { id: { in: tourismToDelete.map(t => t.id) } } });
+      }
+
+      for (const t of (data.tourism || [])) {
+        if (t.id) {
+          await tx.tourismSpot.upsert({
+            where: { id: t.id },
+            update: { title: t.title, category: t.category, description: t.description, imageUrl: t.imageUrl, content: t.content, visitorCount: t.visitorCount, status: t.status },
+            create: { id: t.id, title: t.title, category: t.category, description: t.description, imageUrl: t.imageUrl, content: t.content, visitorCount: t.visitorCount, status: t.status },
+          });
+        }
+      }
+    }, {
+      maxWait: 5000, // 5 seconds max wait to connect
+      timeout: 20000 // 20 seconds timeout for the entire transaction (up from default 5s)
     });
-
-    // Handle agenda updates (simplistic approach: delete all and recreate for demo purpose, or create/update)
-    // To make it simple based on the previous localstorage flow, we just replace them.
-    await prisma.agendaEvent.deleteMany();
-    if (data.agenda && data.agenda.length > 0) {
-      await prisma.agendaEvent.createMany({
-        data: data.agenda.map((a: AgendaEvent) => ({
-          id: a.id,
-          date: a.date,
-          title: a.title,
-          desc: a.desc,
-          location: a.location,
-        }))
-      });
-    }
-
-    // Handle tourism updates
-    await prisma.tourismSpot.deleteMany();
-    if (data.tourism && data.tourism.length > 0) {
-      await prisma.tourismSpot.createMany({
-        data: data.tourism.map((t: TourismSpot) => ({
-          id: t.id,
-          title: t.title,
-          category: t.category,
-          description: t.description,
-          imageUrl: t.imageUrl,
-          content: t.content,
-          visitorCount: t.visitorCount,
-          status: t.status,
-        }))
-      });
-    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

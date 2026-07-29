@@ -4,7 +4,7 @@ import React, { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { MapPin, ArrowRight } from "@phosphor-icons/react";
+import { MapPin, ArrowRight, CalendarBlank } from "@phosphor-icons/react";
 import { useCMSData, formatDateToIndonesian } from "@/lib/cms-store";
 import Link from "next/link";
 
@@ -64,35 +64,47 @@ export default function AgendaSection() {
       </div>
 
       {/* Events Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {data.agenda.map((event, index) => {
-          const borderColor = borderColors[index % borderColors.length];
-          const textColor = textColors[index % textColors.length];
-          
-          return (
-            <div
-              key={event.id}
-              className={`agenda-card bento-card p-8 rounded-[2rem] border-l-8 ${borderColor} flex flex-col justify-between min-h-[260px]`}
-            >
-              <div>
-                <span className={`font-mono text-xs font-bold ${textColor} uppercase`}>
-                  {formatDateToIndonesian(event.date)}
-                </span>
-                <h4 className="font-heading text-xl md:text-2xl font-bold mt-4 mb-3 text-primary">
-                  {event.title}
-                </h4>
-                <p className="text-on-surface-variant text-sm leading-relaxed mb-6">
-                  {event.desc}
-                </p>
+      {(!data.agenda || data.agenda.length === 0) ? (
+        <div className="py-16 px-8 flex flex-col items-center justify-center text-center bg-surface-container rounded-[2rem] border border-dashed border-primary/20">
+          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+            <CalendarBlank size={32} className="text-primary" />
+          </div>
+          <h3 className="font-heading text-xl font-bold text-primary mb-2">Belum Ada Agenda</h3>
+          <p className="text-on-surface-variant max-w-md text-sm md:text-base">
+            Saat ini belum ada agenda atau kegiatan mendatang yang dijadwalkan. Silakan cek kembali nanti.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {data.agenda.map((event, index) => {
+            const borderColor = borderColors[index % borderColors.length];
+            const textColor = textColors[index % textColors.length];
+            
+            return (
+              <div
+                key={event.id}
+                className={`agenda-card bento-card p-8 rounded-[2rem] border-l-8 ${borderColor} flex flex-col justify-between min-h-[260px]`}
+              >
+                <div>
+                  <span className={`font-mono text-xs font-bold ${textColor} uppercase`}>
+                    {formatDateToIndonesian(event.date)}
+                  </span>
+                  <h4 className="font-heading text-xl md:text-2xl font-bold mt-4 mb-3 text-primary">
+                    {event.title}
+                  </h4>
+                  <p className="text-on-surface-variant text-sm leading-relaxed mb-6">
+                    {event.desc}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 text-primary font-bold text-xs md:text-sm mt-auto">
+                  <MapPin size={16} />
+                  <span>{event.location}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-primary font-bold text-xs md:text-sm mt-auto">
-                <MapPin size={16} />
-                <span>{event.location}</span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </section>
   );
 }

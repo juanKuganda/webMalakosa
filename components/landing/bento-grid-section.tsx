@@ -38,7 +38,6 @@ export default function BentoGridSection() {
     );
   }, { scope: containerRef });
 
-  // Dynamic counter and progress animations whenever stats update
   useGSAP(() => {
     const countTarget = data.stats.population;
     const counterObj = { value: 0 };
@@ -46,6 +45,10 @@ export default function BentoGridSection() {
       value: countTarget,
       duration: 1.5,
       ease: "power2.out",
+      scrollTrigger: {
+        trigger: countRef.current,
+        start: "top 90%",
+      },
       onUpdate: () => {
         if (countRef.current) {
           countRef.current.innerText = Math.floor(counterObj.value).toLocaleString("id-ID");
@@ -65,6 +68,10 @@ export default function BentoGridSection() {
         strokeDashoffset: length * (1 - activeRatio),
         duration: 1.2,
         ease: "power2.out",
+        scrollTrigger: {
+          trigger: circleRef.current,
+          start: "top 90%",
+        }
       });
     }
 

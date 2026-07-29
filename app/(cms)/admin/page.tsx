@@ -76,7 +76,7 @@ export default function AdminDashboardPage() {
     }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const finalData = {
       ...formData,
       stats: {
@@ -84,9 +84,15 @@ export default function AdminDashboardPage() {
         dusunCount: formData.dusunList?.length || 0,
       }
     };
-    updateData(finalData);
-    setFormData(finalData);
-    toast.success("Perubahan berhasil disimpan! Landing page telah ter-update secara otomatis.");
+    
+    toast.loading("Menyimpan perubahan...", { id: "save-toast" });
+    try {
+      await updateData(finalData);
+      setFormData(finalData);
+      toast.success("Perubahan berhasil disimpan! Landing page telah ter-update secara otomatis.", { id: "save-toast" });
+    } catch (error) {
+      toast.error("Gagal menyimpan perubahan. Koneksi database terputus. Silakan coba lagi.", { id: "save-toast" });
+    }
   };
   const handleLogout = async () => {
     try {

@@ -1,6 +1,4 @@
-"use client";
 
-import { useState, useEffect } from "react";
 
 export function formatDateToIndonesian(dateString: string) {
   if (!dateString) return "";
@@ -82,68 +80,4 @@ export const DEFAULT_CMS_DATA: VillageCMSData = {
   tourism: [],
 };
 
-let cmsDataPromise: Promise<VillageCMSData> | null = null;
-let cachedData: VillageCMSData | null = null;
-
-export function useCMSData() {
-  const [data, setData] = useState<VillageCMSData>(cachedData || DEFAULT_CMS_DATA);
-  const [loading, setLoading] = useState(!cachedData);
-
-  // Fetch initial data
-  useEffect(() => {
-    if (cachedData) {
-      return; // Already loaded and set in state initialization
-    }
-
-    if (!cmsDataPromise) {
-      cmsDataPromise = fetch("/api/cms", { cache: "no-store" })
-        .then(async (res) => {
-          if (!res.ok) throw new Error("Network response was not ok");
-          const json = await res.json();
-          cachedData = json;
-          return json;
-        })
-        .catch((err) => {
-          console.error("Failed to fetch CMS data", err);
-          cmsDataPromise = null;
-          return DEFAULT_CMS_DATA;
-        });
-    }
-
-    cmsDataPromise.then((json) => {
-      setData(json);
-      setLoading(false);
-    });
-  }, []);
-
-  const updateData = async (newData: VillageCMSData) => {
-    // Optimistic update
-    setData(newData);
-    cachedData = newData;
-    
-    // Save to DB
-    try {
-      const res = await fetch("/api/cms", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newData),
-      });
-
-      if (!res.ok) {
-        console.error("Failed to update CMS data in DB");
-        // Could revert data here if needed
-      }
-    } catch (err) {
-      console.error("Network error when updating CMS data", err);
-    }
-  };
-
-  const resetData = () => {
-    // Only resets local state to default, we might want an API route to reset DB if actually needed
-    setData(DEFAULT_CMS_DATA);
-  };
-
-  return { data, updateData, resetData, loading };
-}
+export { CMSProvider, useCMSData } from "./cms-provider";

@@ -24,7 +24,7 @@ function AnchorScrolling() {
           e.preventDefault();
           // Scroll smoothly with a -80px offset for the sticky navbar
           lenis?.scrollTo(element, { offset: -80, duration: 1.5, lerp: 0.05 });
-          window.history.pushState(null, '', `#${id}`);
+          window.history.replaceState(null, '', `#${id}`);
         }
       }
     };

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
+import { supabase } from '@/lib/supabase';
 
 export async function POST(request: Request) {
   try {
@@ -11,30 +10,36 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    // Generate unique filename
+    // Generate unique filename and put it in a 'wisata' folder
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
     const ext = file.name.split('.').pop() || 'jpg';
-    const filename = `${uniqueSuffix}.${ext}`;
+    const filename = `wisata/${uniqueSuffix}.${ext}`;
 
-    // Upload to local public/uploads folder
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-    
-    try {
-      await mkdir(uploadDir, { recursive: true });
-    } catch (e) {
-      // Directory might already exist
+    // Convert file to Node Buffer to avoid Next.js fetch streaming issues (ECONNRESET)
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    // Upload to Supabase Storage
+    const { data, error } = await supabase.storage
+      .from('malakosa')
+      .upload(filename, buffer, {
+        contentType: file.type || 'image/jpeg',
+        cacheControl: '3600',
+        upsert: false
+      });
+
+    if (error) {
+      console.error('Supabase upload error:', error);
+      return NextResponse.json({ error: 'Gagal mengunggah gambar ke Supabase' }, { status: 500 });
     }
 
-    const filePath = path.join(uploadDir, filename);
-    await writeFile(filePath, buffer);
-
-    const publicUrl = `/uploads/${filename}`;
+    // Get public URL
+    const { data: publicUrlData } = supabase.storage
+      .from('malakosa')
+      .getPublicUrl(filename);
 
     return NextResponse.json({ 
-      url: publicUrl,
+      url: publicUrlData.publicUrl,
       success: true 
     });
   } catch (error) {
@@ -42,4 +47,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 });
   }
 }
-

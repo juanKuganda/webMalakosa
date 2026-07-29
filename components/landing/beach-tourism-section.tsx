@@ -78,7 +78,27 @@ export default function BeachTourismSection() {
     }
   };
 
-  if (!spots.length) return null;
+  if (!spots.length) {
+    return (
+      <section className="relative w-full max-w-7xl mx-auto py-24 md:py-32" id="wisata">
+        {/* Huge Outline Text Background */}
+        <div className="absolute top-12 left-0 w-full overflow-hidden leading-none pointer-events-none select-none z-0 opacity-[0.03]">
+          <h2 className="font-heading font-black text-[12vw] whitespace-nowrap text-transparent stroke-black uppercase" style={{ WebkitTextStroke: "2px #012d1d" }}>
+            DESTINASI DESA
+          </h2>
+        </div>
+        <div className="relative z-10 px-6 lg:px-0 py-16 flex flex-col items-center justify-center min-h-[400px] bg-surface-container rounded-[3rem] border border-dashed border-primary/20 mx-6 lg:mx-0 text-center">
+          <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+            <MapPinLine size={40} className="text-primary" />
+          </div>
+          <h3 className="font-heading text-2xl md:text-3xl font-bold text-primary mb-4">Belum Ada Destinasi</h3>
+          <p className="text-on-surface-variant max-w-lg text-sm md:text-base">
+            Saat ini data destinasi wisata belum tersedia. Kami sedang menyiapkan informasi tempat-tempat menarik di Desa Malakosa untuk Anda kunjungi.
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section

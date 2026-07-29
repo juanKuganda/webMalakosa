@@ -5,9 +5,10 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**", // Allow all hostnames for dynamic CMS images
+        hostname: "**.supabase.co", // Allow all Supabase hostnames for images
       },
     ],
+    unoptimized: true, // Bypass Next.js server image optimization to prevent SSRF private IP blocks on NAT64 networks
   },
 };
 
