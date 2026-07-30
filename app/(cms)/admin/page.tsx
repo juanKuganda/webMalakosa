@@ -16,6 +16,7 @@ import {
   SlidersHorizontal,
   Compass,
   MapPin,
+  ChatTeardropText,
 } from "@phosphor-icons/react";
 
 import { StatsTab } from "@/components/admin/stats-tab";
@@ -23,11 +24,12 @@ import { HeroTab } from "@/components/admin/hero-tab";
 import { DusunTab } from "@/components/admin/dusun-tab";
 import { AgendaTab } from "@/components/admin/agenda-tab";
 import { TourismTab } from "@/components/admin/tourism-tab";
+import { TestimonyTab } from "@/components/admin/testimony-tab";
 
 export default function AdminDashboardPage() {
   const { data: storedData, updateData } = useCMSData();
   const [formData, setFormData] = useState<VillageCMSData>(storedData);
-  const [activeTab, setActiveTab] = useState<"stats" | "hero" | "dusun" | "agenda" | "tourism">("stats");
+  const [activeTab, setActiveTab] = useState<"stats" | "hero" | "dusun" | "agenda" | "tourism" | "testimony">("stats");
   const router = useRouter();
 
   const [prevStored, setPrevStored] = useState(storedData);
@@ -258,6 +260,17 @@ export default function AdminDashboardPage() {
             <Compass size={18} />
             <span>Destinasi Wisata</span>
           </button>
+          <button
+            onClick={() => setActiveTab("testimony")}
+            className={`flex items-center gap-2 px-5 py-3 rounded-t-2xl font-bold text-sm transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === "testimony"
+                ? "bg-[#012d1d] text-white shadow-md"
+                : "bg-white text-[#414844] hover:bg-zinc-100"
+            }`}
+          >
+            <ChatTeardropText size={18} />
+            <span>Testimoni ({(formData.testimonies || []).length})</span>
+          </button>
         </div>
 
         {/* Tab Content Section */}
@@ -267,6 +280,7 @@ export default function AdminDashboardPage() {
           {activeTab === "dusun" && <DusunTab formData={formData} setFormData={setFormData} />}
           {activeTab === "agenda" && <AgendaTab formData={formData} setFormData={setFormData} />}
           {activeTab === "tourism" && <TourismTab formData={formData} setFormData={setFormData} />}
+          {activeTab === "testimony" && <TestimonyTab formData={formData} setFormData={setFormData} />}
         </div>
       </main>
     </div>

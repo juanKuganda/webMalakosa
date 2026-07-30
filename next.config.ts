@@ -8,7 +8,6 @@ const nextConfig: NextConfig = {
         hostname: "**.supabase.co", // Allow all Supabase hostnames for images
       },
     ],
-    unoptimized: true, // Bypass Next.js server image optimization to prevent SSRF private IP blocks on NAT64 networks
   },
 };
 

@@ -10,46 +10,13 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const TESTIMONIALS = [
-  {
-    name: "Andi Pratama",
-    role: "Digital Nomad, Jakarta",
-    rating: 5,
-    text: "Kombinasi yang unik antara suasana desa yang tenang dengan fasilitas digital yang sangat modern. Internetnya sangat cepat, cocok untuk digital nomad!",
-  },
-  {
-    name: "Sarah Jenkins",
-    role: "Traveler, Australia",
-    rating: 5,
-    text: "Pantainya luar biasa bersih. Warganya sangat ramah dan terbuka. Pengalaman menginap di homestay digital benar-benar berkesan.",
-  },
-  {
-    name: "Budi Santoso",
-    role: "Pengusaha, Surabaya",
-    rating: 5,
-    text: "Layanan publik digitalnya sangat membantu. Mengurus administrasi desa jadi jauh lebih cepat dan transparan. Luar biasa!",
-  },
-  {
-    name: "Elena Rodriguez",
-    role: "Content Creator, Spanyol",
-    rating: 5,
-    text: "Spot fotonya luar biasa indah. Penduduk lokal sangat mendukung kegiatan kreatif kami. Saya pasti akan kembali lagi ke Malakosa.",
-  },
-  {
-    name: "Ahmad Fauzi",
-    role: "Mahasiswa Peneliti",
-    rating: 4,
-    text: "Inisiatif digital desanya bisa menjadi percontohan bagi desa-desa lain di Indonesia. Sangat inspiratif melihat desa yang maju tanpa melupakan tradisi.",
-  },
-  {
-    name: "Siti Aminah",
-    role: "Wisatawan Lokal",
-    rating: 5,
-    text: "Makanan lautnya segar-segar dan murah! Homestay-nya juga bersih dan nyaman. Cocok banget buat liburan keluarga.",
-  },
-];
+import { useCMSData } from "@/lib/cms-store";
 
 export default function TestimoniesSection() {
+  const { data } = useCMSData();
+  const TESTIMONIALS = data.testimonies || [];
+  const shouldAnimate = TESTIMONIALS.length > 2;
+
   const containerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -101,12 +68,12 @@ export default function TestimoniesSection() {
 
         <div 
           ref={scrollRef} 
-          className="relative w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
+          className={`relative w-full ${shouldAnimate ? "overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]" : ""}`}
         >
-          <div className="flex w-max hover:[&>div]:[animation-play-state:paused]">
+          <div className={`flex ${shouldAnimate ? "w-max hover:[&>div]:[animation-play-state:paused]" : "justify-center flex-wrap gap-6 md:gap-10"}`}>
             {/* First Set */}
-            <div className="flex gap-6 md:gap-10 pr-6 md:pr-10 animate-scroll">
-              {TESTIMONIALS.map((t, idx) => (
+            <div className={`flex gap-6 md:gap-10 ${shouldAnimate ? "pr-6 md:pr-10 animate-scroll" : ""}`}>
+              {TESTIMONIALS.length > 0 ? TESTIMONIALS.map((t, idx) => (
                 <div key={idx} className="w-[85vw] md:w-[400px] shrink-0 text-left space-y-4 cursor-pointer">
                   <div className="flex gap-1 text-secondary-fixed">
                     {[...Array(t.rating)].map((_, i) => (
@@ -121,27 +88,33 @@ export default function TestimoniesSection() {
                     <p className="font-sans text-xs md:text-sm text-white/60">{t.role}</p>
                   </div>
                 </div>
-              ))}
+              )) : (
+                <div className="text-white/60 text-center w-full min-w-[300px] italic py-8 pr-10">
+                  Belum ada testimoni.
+                </div>
+              )}
             </div>
             {/* Second Set (Duplicate for seamless loop) */}
-            <div className="flex gap-6 md:gap-10 pr-6 md:pr-10 animate-scroll" aria-hidden="true">
-              {TESTIMONIALS.map((t, idx) => (
-                <div key={idx} className="w-[85vw] md:w-[400px] shrink-0 text-left space-y-4 cursor-pointer">
-                  <div className="flex gap-1 text-secondary-fixed">
-                    {[...Array(t.rating)].map((_, i) => (
-                      <Star key={i} size={18} weight="fill" className="text-secondary-fixed" />
-                    ))}
+            {shouldAnimate && (
+              <div className="flex gap-6 md:gap-10 pr-6 md:pr-10 animate-scroll" aria-hidden="true">
+                {TESTIMONIALS.length > 0 ? TESTIMONIALS.map((t, idx) => (
+                  <div key={idx} className="w-[85vw] md:w-[400px] shrink-0 text-left space-y-4 cursor-pointer">
+                    <div className="flex gap-1 text-secondary-fixed">
+                      {[...Array(t.rating)].map((_, i) => (
+                        <Star key={i} size={18} weight="fill" className="text-secondary-fixed" />
+                      ))}
+                    </div>
+                    <p className="font-sans text-base md:text-lg italic leading-relaxed text-white/90">
+                      &quot;{t.text}&quot;
+                    </p>
+                    <div>
+                      <p className="font-heading font-bold text-base md:text-lg">{t.name}</p>
+                      <p className="font-sans text-xs md:text-sm text-white/60">{t.role}</p>
+                    </div>
                   </div>
-                  <p className="font-sans text-base md:text-lg italic leading-relaxed text-white/90">
-                    &quot;{t.text}&quot;
-                  </p>
-                  <div>
-                    <p className="font-heading font-bold text-base md:text-lg">{t.name}</p>
-                    <p className="font-sans text-xs md:text-sm text-white/60">{t.role}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                )) : null}
+              </div>
+            )}
           </div>
         </div>
       </div>

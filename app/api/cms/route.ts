@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
-import { AgendaEvent, TourismSpot } from "@/lib/cms-store";
+import { AgendaEvent, TourismSpot, Testimony } from "@/lib/cms-store";
 
 export const dynamic = "force-dynamic";
 export async function GET() {
@@ -10,6 +10,7 @@ export async function GET() {
     const settings = await prisma.cmsSettings.findFirst();
     const agenda = await prisma.agendaEvent.findMany({ orderBy: { createdAt: 'desc' } });
     const tourism = await prisma.tourismSpot.findMany({ orderBy: { createdAt: 'desc' } });
+    const testimonies = await prisma.testimony.findMany({ orderBy: { createdAt: 'desc' } });
 
     if (!settings) {
        return NextResponse.json({ error: "CMS Data not found" }, { status: 404 });
@@ -36,6 +37,7 @@ export async function GET() {
       },
       agenda,
       tourism,
+      testimonies,
     };
 
     return NextResponse.json(data);
@@ -55,30 +57,35 @@ export async function PUT(req: NextRequest) {
     const data = await req.json();
 
     const currentSettings = await prisma.cmsSettings.findFirst();
-    if (!currentSettings) {
-      return NextResponse.json({ error: "Settings not found" }, { status: 404 });
-    }
 
     await prisma.$transaction(async (tx) => {
-      // Update settings
-      await tx.cmsSettings.update({
-        where: { id: currentSettings.id },
-        data: {
-          heroTitle: data.heroTitle,
-          heroTagline: data.heroTagline,
-          heroDescription: data.heroDescription,
-          visionTitle: data.visionTitle,
-          visionDescription: data.visionDescription,
-          dusunList: JSON.stringify(data.dusunList || []),
-          population: data.stats.population,
-          dusunCount: data.stats.dusunCount,
-          kkCount: data.stats.kkCount,
-          connectivityIndex: data.stats.connectivityIndex,
-          productiveLandArea: data.stats.productiveLandArea,
-          productiveActivePercent: data.stats.productiveActivePercent,
-          growthRate: data.stats.growthRate,
-        },
-      });
+      // Update or create settings
+      const settingsData = {
+        heroTitle: data.heroTitle || "",
+        heroTagline: data.heroTagline || "",
+        heroDescription: data.heroDescription || "",
+        visionTitle: data.visionTitle || "",
+        visionDescription: data.visionDescription || "",
+        dusunList: JSON.stringify(data.dusunList || []),
+        population: data.stats?.population || 0,
+        dusunCount: data.stats?.dusunCount || 0,
+        kkCount: data.stats?.kkCount || 0,
+        connectivityIndex: data.stats?.connectivityIndex || 0,
+        productiveLandArea: data.stats?.productiveLandArea || 0,
+        productiveActivePercent: data.stats?.productiveActivePercent || 0,
+        growthRate: data.stats?.growthRate || "",
+      };
+
+      if (currentSettings) {
+        await tx.cmsSettings.update({
+          where: { id: currentSettings.id },
+          data: settingsData,
+        });
+      } else {
+        await tx.cmsSettings.create({
+          data: settingsData,
+        });
+      }
 
       // Handle agenda updates efficiently
       const existingAgendas = await tx.agendaEvent.findMany({ select: { id: true } });
@@ -114,6 +121,25 @@ export async function PUT(req: NextRequest) {
             where: { id: t.id },
             update: { title: t.title, category: t.category, description: t.description, imageUrl: t.imageUrl, content: t.content, visitorCount: t.visitorCount, status: t.status },
             create: { id: t.id, title: t.title, category: t.category, description: t.description, imageUrl: t.imageUrl, content: t.content, visitorCount: t.visitorCount, status: t.status },
+          });
+        }
+      }
+
+      // Handle testimony updates efficiently
+      const existingTestimonies = await tx.testimony.findMany({ select: { id: true } });
+      const incomingTestimonyIds = (data.testimonies || []).map((t: Testimony) => t.id).filter(Boolean);
+      
+      const testimoniesToDelete = existingTestimonies.filter(t => !incomingTestimonyIds.includes(t.id));
+      if (testimoniesToDelete.length > 0) {
+        await tx.testimony.deleteMany({ where: { id: { in: testimoniesToDelete.map(t => t.id) } } });
+      }
+
+      for (const t of (data.testimonies || [])) {
+        if (t.id) {
+          await tx.testimony.upsert({
+            where: { id: t.id },
+            update: { name: t.name, role: t.role, rating: t.rating, text: t.text },
+            create: { id: t.id, name: t.name, role: t.role, rating: t.rating, text: t.text },
           });
         }
       }
