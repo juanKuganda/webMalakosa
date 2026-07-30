@@ -38,7 +38,7 @@ const items = [
 
 const logoNode = (
   <Link href="/" className="font-heading text-2xl font-black tracking-tighter text-[#012d1d] cursor-pointer hover:opacity-80 transition-opacity">
-    MALAKOSA
+    PEMDES MALAKOSA
   </Link>
 );
 

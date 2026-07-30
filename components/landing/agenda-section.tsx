@@ -51,14 +51,14 @@ export default function AgendaSection() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
           <h2 className="font-heading text-3xl md:text-4xl font-extrabold text-primary mb-3">
-            Agenda Desa Mendatang
+            Layanan Administrasi Desa
           </h2>
           <p className="font-sans text-sm md:text-base text-on-surface-variant">
-            Ikuti berbagai kegiatan komunitas dan festival digital kami.
+            Akses informasi dan panduan alur kepengurusan administrasi warga.
           </p>
         </div>
         <Link href="/kalender" className="text-primary font-bold flex items-center gap-2 hover:underline cursor-pointer group text-sm md:text-base inline-flex">
-          Lihat Kalender Lengkap{" "}
+          Info Lengkap Layanan{" "}
           <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
         </Link>
       </div>
@@ -69,9 +69,9 @@ export default function AgendaSection() {
           <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
             <CalendarBlank size={32} className="text-primary" />
           </div>
-          <h3 className="font-heading text-xl font-bold text-primary mb-2">Belum Ada Agenda</h3>
+          <h3 className="font-heading text-xl font-bold text-primary mb-2">Layanan Belum Tersedia</h3>
           <p className="text-on-surface-variant max-w-md text-sm md:text-base">
-            Saat ini belum ada agenda atau kegiatan mendatang yang dijadwalkan. Silakan cek kembali nanti.
+            Saat ini panduan layanan administrasi sedang diperbarui. Silakan hubungi Kantor Desa untuk informasi lebih lanjut.
           </p>
         </div>
       ) : (

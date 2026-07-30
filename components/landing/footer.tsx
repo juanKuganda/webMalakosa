@@ -66,13 +66,13 @@ export default function Footer() {
             <div className="flex flex-col gap-4">
               <h4 className="font-mono text-sm uppercase tracking-widest text-white/50 mb-2 font-bold">Jejaring Sosial</h4>
               <div className="flex gap-4">
-                <a href="#" className="w-14 h-14 rounded-2xl bg-white/10 hover:bg-[#a0f4c8] hover:text-[#012d1d] flex items-center justify-center transition-all border border-white/10">
+                <a href="https://www.instagram.com/pemdes_malkosa?igsh=MWZkYmVoczVsY3BrMQ==" className="w-14 h-14 rounded-2xl bg-white/10 hover:bg-[#a0f4c8] hover:text-[#012d1d] flex items-center justify-center transition-all border border-white/10">
                   <InstagramLogo size={28} weight="fill" />
                 </a>
                 <a href="#" className="w-14 h-14 rounded-2xl bg-white/10 hover:bg-[#a0f4c8] hover:text-[#012d1d] flex items-center justify-center transition-all border border-white/10">
                   <FacebookLogo size={28} weight="fill" />
                 </a>
-                <a href="#" className="w-14 h-14 rounded-2xl bg-white/10 hover:bg-[#a0f4c8] hover:text-[#012d1d] flex items-center justify-center transition-all border border-white/10">
+                <a href="https://www.google.com/maps/place/Malakosa,+Kec.+Balinggi,+Kabupaten+Parigi+Moutong,+Sulawesi+Tengah/" className="w-14 h-14 rounded-2xl bg-white/10 hover:bg-[#a0f4c8] hover:text-[#012d1d] flex items-center justify-center transition-all border border-white/10">
                   <MapPin size={28} weight="fill" />
                 </a>
               </div>
