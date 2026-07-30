@@ -78,7 +78,7 @@ export const DEFAULT_CMS_DATA: VillageCMSData = {
   ],
   stats: {
     population: 1248,
-    dusunCount: 5,
+    dusunCount: 9,
     kkCount: 312,
     connectivityIndex: 98,
     productiveLandArea: 42,

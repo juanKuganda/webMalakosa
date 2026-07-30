@@ -34,7 +34,7 @@ async function main() {
         visionDescription:
           "Menjadi pionir desa digital di Indonesia Timur yang mengintegrasikan teknologi blockchain untuk transparansi desa dan AI untuk efisiensi agrikultur.",
         population: 1248,
-        dusunCount: 5,
+        dusunCount: 9,
         dusunList: JSON.stringify(["PANTE", "KAILI JAYA", "SINTUVU", "UNA-UNA", "KALBA", "MADURATNA", "INDRA PRASTA", "TAMAN BALI", "TAMASOVO"]),
         kkCount: 312,
         connectivityIndex: 98,
@@ -46,62 +46,6 @@ async function main() {
     console.log("Created default CMS Settings");
   }
 
-  // 3. Create Agenda Events
-  const agendaCount = await prisma.agendaEvent.count();
-  if (agendaCount === 0) {
-    await prisma.agendaEvent.createMany({
-      data: [
-        {
-          id: "ev-1",
-          date: "2026-05-15",
-          title: "Festival Panen Raya",
-          desc: "Syukuran hasil bumi dengan pameran teknologi pertanian terbaru desa.",
-          location: "Balai Desa Malakosa",
-        },
-        {
-          id: "ev-2",
-          date: "2026-06-22",
-          title: "Workshop Coding Remaja",
-          desc: "Pelatihan pengembangan aplikasi mobile untuk anak muda desa.",
-          location: "Digital Hub Malakosa",
-        },
-        {
-          id: "ev-3",
-          date: "2026-07-05",
-          title: "Malakosa Eco-Beach Day",
-          desc: "Aksi bersih pantai dan penanaman mangrove bersama wisatawan.",
-          location: "Pesisir Barat Pantai",
-        },
-      ],
-    });
-    console.log("Created default Agenda Events");
-  }
-
-  // 4. Create Tourism Spots
-  const tourismCount = await prisma.tourismSpot.count();
-  if (tourismCount === 0) {
-    await prisma.tourismSpot.createMany({
-      data: [
-        {
-          id: "tour-1",
-          title: "Pantai Pasir Putih Malakosa",
-          category: "Wisata Bahari",
-          description: "Pemandangan sunset eksotis dengan konservasi terumbu karang digital.",
-          visitorCount: 1420,
-          status: "Buka Setiap Hari",
-        },
-        {
-          id: "tour-2",
-          title: "Hutan Mangrove Eco-Park",
-          category: "Ekowisata",
-          description: "Jalur wooden walkway sepanjang 1.2 km menyusuri ekosistem mangrove asli.",
-          visitorCount: 850,
-          status: "Buka Setiap Hari",
-        },
-      ],
-    });
-    console.log("Created default Tourism Spots");
-  }
 }
 
 main()
