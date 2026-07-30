@@ -5,7 +5,17 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { VillageCMSData, AgendaEvent } from "@/lib/cms-store";
-import { Plus, Trash } from "@phosphor-icons/react";
+import { Plus, Trash, CalendarBlank } from "@phosphor-icons/react";
+import { format } from "date-fns";
+import { id as idLocale } from "date-fns/locale";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function AgendaTab({ 
   formData, 
@@ -15,12 +25,12 @@ export function AgendaTab({
   setFormData: React.Dispatch<React.SetStateAction<VillageCMSData>>;
 }) {
   const [newAgenda, setNewAgenda] = useState<{
-    date: string;
+    date: Date | undefined;
     title: string;
     desc: string;
     location: string;
   }>({
-    date: "",
+    date: undefined,
     title: "",
     desc: "",
     location: "",
@@ -30,9 +40,11 @@ export function AgendaTab({
     e.preventDefault();
     if (!newAgenda.title || !newAgenda.date) return;
 
+    const dateString = format(newAgenda.date, "dd MMMM yyyy", { locale: idLocale }).toUpperCase();
+
     const item: AgendaEvent = {
       id: "ev-" + Date.now(),
-      date: newAgenda.date.toUpperCase(),
+      date: dateString,
       title: newAgenda.title,
       desc: newAgenda.desc,
       location: newAgenda.location || "Desa Malakosa",
@@ -43,7 +55,7 @@ export function AgendaTab({
       agenda: [item, ...prev.agenda],
     }));
 
-    setNewAgenda({ date: "", title: "", desc: "", location: "" });
+    setNewAgenda({ date: undefined, title: "", desc: "", location: "" });
   };
 
   const handleDeleteAgenda = (id: string) => {
@@ -70,14 +82,29 @@ export function AgendaTab({
           <Plus size={18} className="text-[#0e6c4a]" /> Tambah Agenda Baru
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input
-            type="text"
-            placeholder="Tanggal (contoh: 20 AGUSTUS 2026)"
-            value={newAgenda.date}
-            onChange={(e: any) => setNewAgenda({ ...newAgenda, date: e.target.value })}
-            className="bg-white px-4 py-3 rounded-xl border border-zinc-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
-            required
-          />
+          <Popover>
+            <PopoverTrigger
+              render={
+                <Button
+                  variant="outline"
+                  data-empty={!newAgenda.date}
+                  className={cn(
+                    "w-full justify-start text-left font-normal bg-white px-4 py-3 h-[46px] rounded-xl border border-zinc-300 text-sm hover:bg-zinc-50 data-[empty=true]:text-zinc-500",
+                  )}
+                />
+              }
+            >
+              <CalendarBlank size={18} className="mr-2 text-[#0e6c4a]" />
+              {newAgenda.date ? format(newAgenda.date, "dd MMMM yyyy", { locale: idLocale }).toUpperCase() : <span>Pilih Tanggal</span>}
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0 z-[999]" align="start">
+              <Calendar
+                mode="single"
+                selected={newAgenda.date}
+                onSelect={(date) => setNewAgenda({ ...newAgenda, date })}
+              />
+            </PopoverContent>
+          </Popover>
           <Input
             type="text"
             placeholder="Nama / Judul Kegiatan"
