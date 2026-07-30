@@ -7,6 +7,7 @@ export async function getServerCMSData(): Promise<VillageCMSData> {
     const settings = await prisma.cmsSettings.findFirst();
     const agenda = await prisma.agendaEvent.findMany({ orderBy: { createdAt: 'desc' } });
     const tourism = await prisma.tourismSpot.findMany({ orderBy: { createdAt: 'desc' } });
+    const testimonies = await prisma.testimony.findMany({ orderBy: { createdAt: 'desc' } });
 
     if (!settings) return DEFAULT_CMS_DATA;
 
@@ -39,6 +40,7 @@ export async function getServerCMSData(): Promise<VillageCMSData> {
         imageUrl: t.imageUrl === null ? undefined : t.imageUrl,
         content: t.content === null ? undefined : t.content,
       })),
+      testimonies,
     };
   } catch (error) {
     console.error("Failed to fetch CMS Data on server:", error);

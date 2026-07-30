@@ -43,6 +43,14 @@ export interface TourismSpot {
   status: string;
 }
 
+export interface Testimony {
+  id: string;
+  name: string;
+  role: string;
+  rating: number;
+  text: string;
+}
+
 export interface VillageCMSData {
   heroTitle: string;
   heroTagline: string;
@@ -53,6 +61,7 @@ export interface VillageCMSData {
   stats: VillageStats;
   agenda: AgendaEvent[];
   tourism: TourismSpot[];
+  testimonies: Testimony[];
 }
 
 export const DEFAULT_CMS_DATA: VillageCMSData = {
@@ -78,6 +87,7 @@ export const DEFAULT_CMS_DATA: VillageCMSData = {
   },
   agenda: [],
   tourism: [],
+  testimonies: [],
 };
 
 export { CMSProvider, useCMSData } from "./cms-provider";
