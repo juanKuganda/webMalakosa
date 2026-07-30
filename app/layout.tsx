@@ -21,21 +21,60 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Malakosa - Harmoni Alam dan Tradisi",
-  description: "Portal Desa Malakosa: Membangun masa depan digital yang berakar pada nilai-nilai agraris dan keberlanjutan lingkungan Sulawesi Tengah.",
-  keywords: ["Desa Malakosa", "Wisata Bahari", "Digital Village", "Sulawesi Tengah", "Parigi Moutong"],
+  title: {
+    default: "Desa Malakosa - Harmoni Alam dan Tradisi",
+    template: "%s | Desa Malakosa"
+  },
+  description: "Portal Resmi Desa Malakosa, Kabupaten Parigi Moutong. Menjelajahi keindahan wisata alam, wisata bahari, agenda kegiatan desa, budaya, pertanian, dan layanan publik digital yang inovatif di Sulawesi Tengah.",
+  keywords: [
+    "Desa Malakosa", 
+    "Malakosa", 
+    "Wisata Bahari", 
+    "Wisata Alam Sulawesi Tengah",
+    "Digital Village", 
+    "Desa Digital",
+    "Sulawesi Tengah", 
+    "Sulteng",
+    "Parigi Moutong", 
+    "Kabupaten Parigi Moutong",
+    "Harmoni Alam", 
+    "Desa Agraris",
+    "Pariwisata Malakosa",
+    "Layanan Publik Desa",
+    "Profil Desa Malakosa"
+  ],
+  authors: [{ name: "Pemerintah Desa Malakosa" }],
+  creator: "Pemerintah Desa Malakosa",
+  publisher: "Desa Malakosa",
+  alternates: {
+    canonical: "https://www.malakosa.web.id/",
+  },
   openGraph: {
-    title: "Malakosa - Harmoni Alam dan Tradisi",
-    description: "Portal Resmi Desa Malakosa. Menjelajahi keindahan wisata, agenda kegiatan, dan layanan publik yang inovatif.",
+    title: "Portal Resmi Desa Malakosa - Harmoni Alam dan Tradisi",
+    description: "Membangun masa depan digital yang berakar pada nilai-nilai agraris dan keberlanjutan lingkungan di Desa Malakosa, Parigi Moutong, Sulawesi Tengah.",
     url: "https://www.malakosa.web.id/",
-    siteName: "Desa Malakosa",
+    siteName: "Portal Resmi Desa Malakosa",
     locale: "id_ID",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Malakosa - Harmoni Alam dan Tradisi",
-    description: "Portal Resmi Desa Malakosa. Menjelajahi keindahan wisata, agenda kegiatan, dan layanan publik yang inovatif.",
+    title: "Desa Malakosa - Harmoni Alam dan Tradisi",
+    description: "Jelajahi keindahan wisata, budaya, dan potensi Desa Malakosa, Kabupaten Parigi Moutong, Sulawesi Tengah.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  icons: {
+    icon: "/favicon.ico",
   },
 };
 
