@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Malakosa - Harmoni Alam dan Tradisi",
     description: "Portal Resmi Desa Malakosa. Menjelajahi keindahan wisata, agenda kegiatan, dan layanan publik yang inovatif.",
-    url: "https://malakosa.desa.id",
+    url: "https://www.malakosa.web.id/",
     siteName: "Desa Malakosa",
     locale: "id_ID",
     type: "website",
