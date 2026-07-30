@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { AgendaEvent, TourismSpot, Testimony } from "@/lib/cms-store";
@@ -13,7 +14,11 @@ export async function GET() {
     const testimonies = await prisma.testimony.findMany({ orderBy: { createdAt: 'desc' } });
 
     if (!settings) {
-       return NextResponse.json({ error: "CMS Data not found" }, { status: 404 });
+       return NextResponse.json({
+         heroTitle: "DESA MALAKOSA", heroTagline: "Digital Village Excellence", heroDescription: "Harmoni Alam dan Tradisi: Membangun masa depan digital yang berakar pada nilai-nilai agraris dan keberlanjutan lingkungan Sulawesi Tengah.", visionTitle: "Visi Masa Depan Digital", visionDescription: "Menjadi pionir desa digital di Indonesia Timur yang mengintegrasikan teknologi blockchain untuk transparansi desa dan AI untuk efisiensi agrikultur.", dusunList: ["PANTE", "KAILI JAYA", "SINTUVU", "UNA-UNA", "KALBA", "MADURATNA", "INDRA PRASTA", "TAMAN BALI", "TAMASOVO"],
+         stats: { population: 1248, dusunCount: 5, kkCount: 312, connectivityIndex: 98, productiveLandArea: 42, productiveActivePercent: 75, growthRate: "+2.4% Pertumbuhan Tahun Ini" },
+         agenda, tourism, testimonies
+       });
     }
 
     let dusunList: string[] = [];
@@ -144,9 +149,12 @@ export async function PUT(req: NextRequest) {
         }
       }
     }, {
-      maxWait: 5000, // 5 seconds max wait to connect
-      timeout: 20000 // 20 seconds timeout for the entire transaction (up from default 5s)
+      maxWait: 5000,
+      timeout: 20000
     });
+
+    // Instantly sync the landing page
+    revalidatePath("/", "layout");
 
     return NextResponse.json({ success: true });
   } catch (error) {
