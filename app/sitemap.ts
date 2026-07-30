@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://malakosa.web.id'
+  const baseUrl = 'https://www.malakosa.web.id'
   const lastModified = new Date()
 
   return [
