@@ -85,55 +85,8 @@ export const DEFAULT_CMS_DATA: VillageCMSData = {
     productiveActivePercent: 75,
     growthRate: "+2.4% Pertumbuhan Tahun Ini",
   },
-  agenda: [
-    {
-      id: "lyn-1",
-      date: "Senin - Jumat",
-      title: "Surat Keterangan Usaha (SKU)",
-      desc: "Layanan untuk pengurusan SKU warga. Harap membawa KTP dan KK ke kantor desa.",
-      location: "Kantor Desa"
-    },
-    {
-      id: "lyn-2",
-      date: "Senin - Jumat",
-      title: "Pembuatan KTP & KK Baru",
-      desc: "Layanan pengurusan administrasi kependudukan dasar bagi masyarakat.",
-      location: "Kantor Desa"
-    },
-    {
-      id: "lyn-3",
-      date: "Sesuai Jadwal",
-      title: "Layanan Pertanian & UMKM",
-      desc: "Konsultasi produk UMKM dan pendataan hasil panen warga Desa Malakosa.",
-      location: "Balai Desa"
-    }
-  ],
-  tourism: [
-    {
-      id: "sjr-1",
-      title: "Raja Pue Pilingi",
-      category: "Sejarah Kerajaan",
-      description: "Pue Pilingi adalah pendiri pertahanan dan Magau (Raja) pertama Kerajaan Balinggi yang berkuasa antara tahun 1516 hingga 1593.",
-      visitorCount: 1516,
-      status: "Bersejarah"
-    },
-    {
-      id: "sjr-2",
-      title: "Pohon Balinggi",
-      category: "Asal Usul",
-      description: "Cikal bakal nama Balinggi berasal dari sebuah pohon raksasa dengan akar tinggi-tinggi yang terletak di sebelah barat gunung.",
-      visitorCount: 1515,
-      status: "Leluhur"
-    },
-    {
-      id: "sjr-3",
-      title: "Kepemimpinan Koroma",
-      category: "Kepala Kampung",
-      description: "Koroma adalah Kepala Kampung Malakosa pertama (1918-1944) dan penerus dari raja terakhir (Pue Siombinanga).",
-      visitorCount: 1918,
-      status: "Silsilah"
-    }
-  ],
+  agenda: [],
+  tourism: [],
   testimonies: [],
 };
 

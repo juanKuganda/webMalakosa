@@ -84,16 +84,16 @@ export default function BeachTourismSection() {
         {/* Huge Outline Text Background */}
         <div className="absolute top-12 left-0 w-full overflow-hidden leading-none pointer-events-none select-none z-0 opacity-[0.03]">
           <h2 className="font-heading font-black text-[12vw] whitespace-nowrap text-transparent stroke-black uppercase" style={{ WebkitTextStroke: "2px #012d1d" }}>
-            JEJAK SEJARAH
+            DESTINASI DESA
           </h2>
         </div>
         <div className="relative z-10 px-6 lg:px-0 py-16 flex flex-col items-center justify-center min-h-[400px] bg-surface-container rounded-[3rem] border border-dashed border-primary/20 mx-6 lg:mx-0 text-center">
           <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6">
             <MapPinLine size={40} className="text-primary" />
           </div>
-          <h3 className="font-heading text-2xl md:text-3xl font-bold text-primary mb-4">Belum Ada Catatan Sejarah</h3>
+          <h3 className="font-heading text-2xl md:text-3xl font-bold text-primary mb-4">Belum Ada Destinasi</h3>
           <p className="text-on-surface-variant max-w-lg text-sm md:text-base">
-            Saat ini data sejarah belum tersedia. Kami sedang menyiapkan informasi sejarah Desa Malakosa untuk Anda ketahui.
+            Saat ini data destinasi wisata belum tersedia. Kami sedang menyiapkan informasi tempat-tempat menarik di Desa Malakosa untuk Anda kunjungi.
           </p>
         </div>
       </section>
@@ -109,7 +109,7 @@ export default function BeachTourismSection() {
       {/* Huge Outline Text Background */}
       <div className="absolute top-12 left-0 w-full overflow-hidden leading-none pointer-events-none select-none z-0 opacity-[0.03]">
         <h2 className="font-heading font-black text-[12vw] whitespace-nowrap text-transparent stroke-black uppercase" style={{ WebkitTextStroke: "2px #012d1d" }}>
-          JEJAK SEJARAH
+          DESTINASI DESA
         </h2>
       </div>
 
@@ -142,7 +142,7 @@ export default function BeachTourismSection() {
                 <div className="w-14 h-14 rounded-2xl bg-[#0e6c4a] flex items-center justify-center text-white shadow-lg shadow-[#0e6c4a]/30 transform -rotate-3 hover:rotate-0 transition-transform">
                   <Users size={28} weight="bold" />
                 </div>
-                <h4 className="font-heading font-black text-primary mt-1 text-sm md:text-base">Tahun</h4>
+                <h4 className="font-heading font-black text-primary mt-1 text-sm md:text-base">Pengunjung</h4>
                 <p className="text-xl font-bold font-mono text-[#012d1d]">{activeSpot.visitorCount.toLocaleString('id-ID')}</p>
               </div>
               <div className="flex flex-col gap-3">
@@ -159,7 +159,7 @@ export default function BeachTourismSection() {
                 href={`/wisata/${activeSpot.id}`} 
                 className="bg-[#012d1d] text-white w-full py-5 rounded-2xl font-black text-sm hover:bg-[#0e6c4a] hover:-translate-y-1 transition-all shadow-xl shadow-[#012d1d]/20 flex items-center justify-center tracking-widest uppercase"
               >
-                Eksplorasi Sejarah
+                Eksplorasi Destinasi
               </Link>
             </div>
           </div>
@@ -186,7 +186,7 @@ export default function BeachTourismSection() {
           
           <div className="absolute bottom-8 right-8 z-20 bg-[#012d1d]/70 backdrop-blur-md p-6 rounded-3xl border border-white/20 max-w-[260px] text-white hidden md:block">
             <p className="font-mono text-[10px] text-[#a0f4c8] font-bold mb-2 uppercase tracking-widest">
-              Fakta Sejarah
+              Review Wisatawan
             </p>
             <div className="flex gap-1.5 mb-3">
               <Star size={18} weight="fill" className="text-yellow-400 drop-shadow-md" />
@@ -196,7 +196,7 @@ export default function BeachTourismSection() {
               <Star size={18} weight="fill" className="text-yellow-400 drop-shadow-md" />
             </div>
             <p className="text-xs text-white/90 italic leading-relaxed font-sans font-semibold">
-              &quot;Satu babak penting yang membentuk identitas peradaban masyarakat di masa kini.&quot;
+              &quot;Salah satu permata tersembunyi terbaik yang ada di desa ini.&quot;
             </p>
           </div>
           

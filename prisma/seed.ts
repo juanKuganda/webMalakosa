@@ -47,64 +47,15 @@ async function main() {
   }
 
   // 3. Create Agenda
+  // (Kosong untuk mode production, agar diisi melalui panel Admin)
   if (await prisma.agendaEvent.count() === 0) {
-    const agendas = [
-      {
-        date: "Senin - Jumat",
-        title: "Surat Keterangan Usaha (SKU)",
-        desc: "Layanan untuk pengurusan SKU warga. Harap membawa KTP dan KK ke kantor desa.",
-        location: "Kantor Desa"
-      },
-      {
-        date: "Senin - Jumat",
-        title: "Pembuatan KTP & KK Baru",
-        desc: "Layanan pengurusan administrasi kependudukan dasar bagi masyarakat.",
-        location: "Kantor Desa"
-      },
-      {
-        date: "Sesuai Jadwal",
-        title: "Layanan Pertanian & UMKM",
-        desc: "Konsultasi produk UMKM dan pendataan hasil panen warga Desa Malakosa.",
-        location: "Balai Desa"
-      }
-    ];
-
-    for (const item of agendas) {
-      await prisma.agendaEvent.create({ data: item });
-    }
-    console.log("Created default Agenda Events");
+    console.log("No Agenda Events seeded (production ready)");
   }
 
   // 4. Create Tourism
+  // (Kosong untuk mode production, agar diisi melalui panel Admin)
   if (await prisma.tourismSpot.count() === 0) {
-    const spots = [
-      {
-        title: "Raja Pue Pilingi",
-        category: "Sejarah Kerajaan",
-        description: "Pue Pilingi adalah pendiri pertahanan dan Magau (Raja) pertama Kerajaan Balinggi yang berkuasa antara tahun 1516 hingga 1593.",
-        visitorCount: 1516,
-        status: "Bersejarah"
-      },
-      {
-        title: "Pohon Balinggi",
-        category: "Asal Usul",
-        description: "Cikal bakal nama Balinggi berasal dari sebuah pohon raksasa dengan akar tinggi-tinggi yang terletak di sebelah barat gunung.",
-        visitorCount: 1515,
-        status: "Leluhur"
-      },
-      {
-        title: "Kepemimpinan Koroma",
-        category: "Kepala Kampung",
-        description: "Koroma adalah Kepala Kampung Malakosa pertama (1918-1944) dan penerus dari raja terakhir (Pue Siombinanga).",
-        visitorCount: 1918,
-        status: "Silsilah"
-      }
-    ];
-
-    for (const item of spots) {
-      await prisma.tourismSpot.create({ data: item });
-    }
-    console.log("Created default Tourism Spots");
+    console.log("No Tourism Spots seeded (production ready)");
   }
 
 }
