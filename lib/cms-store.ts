@@ -66,12 +66,12 @@ export interface VillageCMSData {
 
 export const DEFAULT_CMS_DATA: VillageCMSData = {
   heroTitle: "DESA MALAKOSA",
-  heroTagline: "Digital Village Excellence",
+  heroTagline: "Malakosa - Harmoni Alam dan Tradisi",
   heroDescription:
-    "Harmoni Alam dan Tradisi: Membangun masa depan digital yang berakar pada nilai-nilai agraris dan keberlanjutan lingkungan Sulawesi Tengah.",
-  visionTitle: "Visi Masa Depan Digital",
+    "Membangun masa depan digital yang berakar pada nilai-nilai agraris dan keberlanjutan lingkungan Sulawesi Tengah.",
+  visionTitle: "Pilar Desa: Alam, Sejarah, Sosial",
   visionDescription:
-    "Menjadi pionir desa digital di Indonesia Timur yang mengintegrasikan teknologi blockchain untuk transparansi desa dan AI untuk efisiensi agrikultur.",
+    "Masyarakat Desa Malakosa didominasi oleh Suku Kaili dengan tradisi gotong royong agraris peninggalan Kerajaan Balinggi.",
   dusunList: [
     "PANTE", "KAILI JAYA", "SINTUVU", "UNA-UNA", "KALBA",
     "MADURATNA", "INDRA PRASTA", "TAMAN BALI", "TAMASOVO"

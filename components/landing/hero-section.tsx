@@ -108,7 +108,7 @@ export default function HeroSection() {
                 <div className="w-12 h-12 rounded-full bg-[#a0f4c8] text-[#012d1d] flex items-center justify-center mr-6 group-hover:scale-110 transition-transform">
                   <ArrowRight size={20} weight="bold" />
                 </div>
-                <span className="uppercase tracking-widest">Eksplorasi Desa</span>
+                <span className="uppercase tracking-widest">Jelajahi Profil</span>
               </Link>
             </div>
           </div>

@@ -272,12 +272,12 @@ export default function BentoGridSection() {
             Inovasi Terkini
           </span>
           <h4 className="font-heading text-3xl md:text-4xl font-black leading-tight tracking-tight">
-            Revolusi<br />Ekonomi Desa 2.0
+            Potensi<br />Agraris & Alam
           </h4>
         </div>
         <div className="flex justify-between items-end mt-8 relative z-10">
           <p className="text-[#0e6c4a] font-semibold text-sm max-w-[140px] leading-relaxed">
-            Ekosistem tambak, nelayan & perkebunan pintar.
+            Inovasi pertanian, nelayan & UMKM lokal.
           </p>
           <div className="w-14 h-14 bg-[#012d1d] rounded-2xl flex items-center justify-center group-hover:rotate-[-45deg] transition-transform duration-300 shrink-0 shadow-xl">
             <ArrowRight size={24} className="text-[#a0f4c8]" />

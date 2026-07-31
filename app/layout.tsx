@@ -22,26 +22,27 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Desa Malakosa - Harmoni Alam dan Tradisi",
-    template: "%s | Desa Malakosa"
+    default: "Website Resmi Desa Malakosa - Kec. Balinggi, Parigi Moutong",
+    template: "%s | Pemdes Malakosa"
   },
-  description: "Portal Resmi Desa Malakosa, Kabupaten Parigi Moutong. Menjelajahi keindahan wisata alam, wisata bahari, agenda kegiatan desa, budaya, pertanian, dan layanan publik digital yang inovatif di Sulawesi Tengah.",
+  description: "Portal informasi resmi pemerintahan, potensi alam, sejarah Kerajaan Balinggi, dan layanan masyarakat Desa Malakosa, Kecamatan Balinggi, Kabupaten Parigi Moutong, Sulawesi Tengah. (Dikembangkan oleh KKN Untad 2026).",
   keywords: [
     "Desa Malakosa", 
-    "Malakosa", 
-    "Wisata Bahari", 
-    "Wisata Alam Sulawesi Tengah",
-    "Digital Village", 
-    "Desa Digital",
-    "Sulawesi Tengah", 
+    "Sejarah Malakosa", 
+    "Balinggi", 
+    "Parigi Moutong",
+    "Pue Pilingi", 
+    "Kerajaan Balinggi",
+    "KKN Untad", 
+    "Potensi Desa Malakosa",
+    "Profil Desa Malakosa",
+    "Desa Digital Malakosa",
+    "Pemerintahan Desa Malakosa",
+    "Informasi Desa Malakosa",
+    "Wisata Alam Parigi Moutong",
+    "Sulawesi Tengah",
     "Sulteng",
-    "Parigi Moutong", 
-    "Kabupaten Parigi Moutong",
-    "Harmoni Alam", 
-    "Desa Agraris",
-    "Pariwisata Malakosa",
-    "Layanan Publik Desa",
-    "Profil Desa Malakosa"
+    "Desa Agraris"
   ],
   authors: [{ name: "Pemerintah Desa Malakosa" }],
   creator: "Pemerintah Desa Malakosa",
@@ -50,17 +51,17 @@ export const metadata: Metadata = {
     canonical: "https://www.malakosa.web.id/",
   },
   openGraph: {
-    title: "Portal Resmi Desa Malakosa - Harmoni Alam dan Tradisi",
-    description: "Membangun masa depan digital yang berakar pada nilai-nilai agraris dan keberlanjutan lingkungan di Desa Malakosa, Parigi Moutong, Sulawesi Tengah.",
+    title: "Website Resmi Desa Malakosa - Kec. Balinggi, Parigi Moutong",
+    description: "Portal informasi resmi pemerintahan, potensi alam, sejarah Kerajaan Balinggi, dan layanan masyarakat Desa Malakosa.",
     url: "https://www.malakosa.web.id/",
-    siteName: "Portal Resmi Desa Malakosa",
+    siteName: "Pemdes Malakosa",
     locale: "id_ID",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Desa Malakosa - Harmoni Alam dan Tradisi",
-    description: "Jelajahi keindahan wisata, budaya, dan potensi Desa Malakosa, Kabupaten Parigi Moutong, Sulawesi Tengah.",
+    title: "Website Resmi Desa Malakosa - Kec. Balinggi",
+    description: "Portal informasi resmi pemerintahan, potensi alam, sejarah Kerajaan Balinggi, dan layanan masyarakat Desa Malakosa.",
   },
   robots: {
     index: true,
@@ -72,9 +73,6 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
-  },
-  icons: {
-    icon: "/favicon.ico",
   },
 };
 

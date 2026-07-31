@@ -27,12 +27,12 @@ async function main() {
     await prisma.cmsSettings.create({
       data: {
         heroTitle: "DESA MALAKOSA",
-        heroTagline: "Digital Village Excellence",
+        heroTagline: "Malakosa - Harmoni Alam dan Tradisi",
         heroDescription:
-          "Harmoni Alam dan Tradisi: Membangun masa depan digital yang berakar pada nilai-nilai agraris dan keberlanjutan lingkungan Sulawesi Tengah.",
-        visionTitle: "Visi Masa Depan Digital",
+          "Membangun masa depan digital yang berakar pada nilai-nilai agraris dan keberlanjutan lingkungan Sulawesi Tengah.",
+        visionTitle: "Pilar Desa: Alam, Sejarah, Sosial",
         visionDescription:
-          "Menjadi pionir desa digital di Indonesia Timur yang mengintegrasikan teknologi blockchain untuk transparansi desa dan AI untuk efisiensi agrikultur.",
+          "Masyarakat Desa Malakosa didominasi oleh Suku Kaili dengan tradisi gotong royong agraris peninggalan Kerajaan Balinggi.",
         population: 1248,
         dusunCount: 9,
         dusunList: JSON.stringify(["PANTE", "KAILI JAYA", "SINTUVU", "UNA-UNA", "KALBA", "MADURATNA", "INDRA PRASTA", "TAMAN BALI", "TAMASOVO"]),
@@ -44,6 +44,18 @@ async function main() {
       },
     });
     console.log("Created default CMS Settings");
+  }
+
+  // 3. Create Agenda
+  // (Kosong untuk mode production, agar diisi melalui panel Admin)
+  if (await prisma.agendaEvent.count() === 0) {
+    console.log("No Agenda Events seeded (production ready)");
+  }
+
+  // 4. Create Tourism
+  // (Kosong untuk mode production, agar diisi melalui panel Admin)
+  if (await prisma.tourismSpot.count() === 0) {
+    console.log("No Tourism Spots seeded (production ready)");
   }
 
 }
