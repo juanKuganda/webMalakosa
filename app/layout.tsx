@@ -56,10 +56,19 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/icon.png", type: "image/png" },
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
     ],
-    apple: "/icon.png",
+    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  manifest: "/site.webmanifest",
+  appleWebApp: {
+    title: "Desa Malakosa",
+    statusBarStyle: "default",
+    capable: true,
   },
   openGraph: {
     title: "Website Resmi Desa Malakosa - Kec. Balinggi, Parigi Moutong",
@@ -70,7 +79,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/icon.png",
+        url: "/web-app-manifest-512x512.png",
         width: 512,
         height: 512,
         alt: "Logo Resmi Desa Malakosa",
@@ -81,7 +90,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Website Resmi Desa Malakosa - Kec. Balinggi",
     description: "Portal informasi resmi pemerintahan, potensi alam, sejarah Kerajaan Balinggi, dan layanan masyarakat Desa Malakosa.",
-    images: ["/icon.png"],
+    images: ["/web-app-manifest-512x512.png"],
   },
   robots: {
     index: true,
@@ -112,6 +121,7 @@ export default function RootLayout({
       )}
     >
       <head>
+        <meta name="theme-color" content="#012d1d" />
         <OrganizationJsonLd />
       </head>
       <body className="flex flex-col bg-background text-on-surface">
