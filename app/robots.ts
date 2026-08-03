@@ -1,12 +1,19 @@
-import { MetadataRoute } from 'next'
+import { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: {
-      userAgent: '*',
-      allow: '/',
-      disallow: ['/admin', '/api/'], // Sesuaikan dengan path yang ingin Anda sembunyikan dari bot
-    },
-    sitemap: 'https://malakosa.web.id/sitemap.xml',
-  }
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/',
+        disallow: ['/admin', '/admin/*', '/api/*'],
+      },
+      {
+        userAgent: 'Googlebot',
+        allow: '/',
+        disallow: ['/admin', '/admin/*', '/api/*'],
+      },
+    ],
+    sitemap: 'https://www.malakosa.web.id/sitemap.xml',
+  };
 }

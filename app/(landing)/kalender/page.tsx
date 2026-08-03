@@ -1,9 +1,23 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import CalendarView from "@/components/landing/calendar-view";
 import Link from "next/link";
 import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Kalender Agenda & Kegiatan",
+  description: "Jadwal resmi seluruh kegiatan komunitas, musyawarah desa, posyandu, dan acara kebudayaan di Desa Malakosa secara real-time.",
+  alternates: {
+    canonical: "https://www.malakosa.web.id/kalender",
+  },
+  openGraph: {
+    title: "Kalender Agenda Desa Malakosa",
+    description: "Jadwal resmi kegiatan komunitas, musyawarah desa, posyandu, dan acara penting Desa Malakosa.",
+    url: "https://www.malakosa.web.id/kalender",
+  },
+};
 
 export default async function KalenderPage() {
   const events = await prisma.agendaEvent.findMany({
