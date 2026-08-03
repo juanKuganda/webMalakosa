@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "db:seed": "prisma db seed",
+    "db:clean": "npx tsx prisma/clean.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

@@ -23,6 +23,23 @@ export function StatsTab({
   formData: VillageCMSData; 
   handleStatChange: (field: keyof VillageCMSData["stats"], value: string | number) => void;
 }) {
+  const handleNumericKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Strictly block minus sign, plus sign, exponents, commas, and dots
+    if (["-", "+", "e", "E", ".", ","].includes(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  const handleNumericChange = (field: keyof VillageCMSData["stats"], rawVal: string) => {
+    const digitsOnly = rawVal.replace(/\D/g, "");
+    if (digitsOnly === "") {
+      handleStatChange(field, "");
+    } else {
+      // If user enters e.g. "05", parse to "5" so leading zero is stripped. If just "0", keep "0".
+      handleStatChange(field, String(parseInt(digitsOnly, 10)));
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div>
@@ -41,9 +58,13 @@ export function StatsTab({
             Total Populasi (Jiwa)
           </Label>
           <Input
-            type="number"
-            value={formData.stats.population}
-            onChange={(e: any) => handleStatChange("population", Number(e.target.value))}
+            type="text"
+            inputMode="numeric"
+            value={formData.stats.population !== undefined && formData.stats.population !== null ? String(formData.stats.population) : ""}
+            onKeyDown={handleNumericKeyDown}
+            onFocus={(e) => e.target.select()}
+            onChange={(e: any) => handleNumericChange("population", e.target.value)}
+            placeholder="0"
             className="w-full bg-white px-4 py-3 rounded-xl border border-zinc-300 font-heading text-lg font-bold text-[#012d1d] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
           />
           <p className="text-[11px] text-[#414844]">
@@ -57,8 +78,8 @@ export function StatsTab({
             Jumlah Wilayah Dusun (Otomatis)
           </Label>
           <Input
-            type="number"
-            value={formData.dusunList?.length || 0}
+            type="text"
+            value={String(formData.dusunList?.length || 0)}
             disabled
             className="w-full bg-zinc-100 px-4 py-3 rounded-xl border border-zinc-200 font-heading text-lg font-bold text-zinc-500 cursor-not-allowed"
           />
@@ -73,9 +94,13 @@ export function StatsTab({
             Jumlah Kepala Keluarga (KK)
           </Label>
           <Input
-            type="number"
-            value={formData.stats.kkCount}
-            onChange={(e: any) => handleStatChange("kkCount", Number(e.target.value))}
+            type="text"
+            inputMode="numeric"
+            value={formData.stats.kkCount !== undefined && formData.stats.kkCount !== null ? String(formData.stats.kkCount) : ""}
+            onKeyDown={handleNumericKeyDown}
+            onFocus={(e) => e.target.select()}
+            onChange={(e: any) => handleNumericChange("kkCount", e.target.value)}
+            placeholder="0"
             className="w-full bg-white px-4 py-3 rounded-xl border border-zinc-300 font-heading text-lg font-bold text-[#012d1d] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
           />
           <p className="text-[11px] text-[#414844]">
@@ -83,26 +108,28 @@ export function StatsTab({
           </p>
         </div>
 
-        {/* Jumlah Agama slider */}
+        {/* Jumlah Agama Terdaftar */}
         <div className="bg-[#f6f3f2] p-5 rounded-2xl border border-zinc-200 space-y-2">
           <div className="flex justify-between items-center">
             <Label className="block text-xs font-bold font-mono text-[#012d1d] uppercase">
               Jumlah Agama Terdaftar
             </Label>
             <span className="font-heading font-black text-lg text-[#0e6c4a]">
-              {formData.stats.connectivityIndex}
+              {formData.stats.religionCount || 0} Agama
             </span>
           </div>
           <Input
-            type="range"
-            min="1"
-            max="6"
-            value={formData.stats.connectivityIndex}
-            onChange={(e: any) => handleStatChange("connectivityIndex", Number(e.target.value))}
-            className="w-full accent-[#0e6c4a] cursor-pointer"
+            type="text"
+            inputMode="numeric"
+            value={formData.stats.religionCount !== undefined && formData.stats.religionCount !== null ? String(formData.stats.religionCount) : ""}
+            onKeyDown={handleNumericKeyDown}
+            onFocus={(e) => e.target.select()}
+            onChange={(e: any) => handleNumericChange("religionCount", e.target.value)}
+            placeholder="4"
+            className="w-full bg-white px-4 py-3 rounded-xl border border-zinc-300 font-heading text-lg font-bold text-[#012d1d] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
           />
           <p className="text-[11px] text-[#414844]">
-            Jumlah agama yang dianut oleh penduduk desa.
+            Jumlah keberagaman agama yang dianut oleh penduduk desa (contoh: Islam, Kristen Protestan, Katolik, Hindu).
           </p>
         </div>
 
@@ -112,9 +139,13 @@ export function StatsTab({
             Luas Lahan Produktif (Hektar)
           </Label>
           <Input
-            type="number"
-            value={formData.stats.productiveLandArea}
-            onChange={(e: any) => handleStatChange("productiveLandArea", Number(e.target.value))}
+            type="text"
+            inputMode="numeric"
+            value={formData.stats.productiveLandArea !== undefined && formData.stats.productiveLandArea !== null ? String(formData.stats.productiveLandArea) : ""}
+            onKeyDown={handleNumericKeyDown}
+            onFocus={(e) => e.target.select()}
+            onChange={(e: any) => handleNumericChange("productiveLandArea", e.target.value)}
+            placeholder="0"
             className="w-full bg-white px-4 py-3 rounded-xl border border-zinc-300 font-heading text-lg font-bold text-[#012d1d] focus:outline-none focus:ring-2 focus:ring-[#0e6c4a]"
           />
           <p className="text-[11px] text-[#414844]">

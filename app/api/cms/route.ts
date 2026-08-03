@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
-import { AgendaEvent, TourismSpot, Testimony } from "@/lib/cms-store";
+import { AgendaEvent, TourismSpot, Testimony, DEFAULT_CMS_DATA } from "@/lib/cms-store";
 
 export const dynamic = "force-dynamic";
 export async function GET() {
@@ -15,9 +15,10 @@ export async function GET() {
 
     if (!settings) {
        return NextResponse.json({
-         heroTitle: "DESA MALAKOSA", heroTagline: "Digital Village Excellence", heroDescription: "Harmoni Alam dan Tradisi: Membangun masa depan digital yang berakar pada nilai-nilai agraris dan keberlanjutan lingkungan Sulawesi Tengah.", visionTitle: "Visi Masa Depan Digital", visionDescription: "Menjadi pionir desa digital di Indonesia Timur yang mengintegrasikan teknologi blockchain untuk transparansi desa dan AI untuk efisiensi agrikultur.", dusunList: ["PANTE", "KAILI JAYA", "SINTUVU", "UNA-UNA", "KALBA", "MADURATNA", "INDRA PRASTA", "TAMAN BALI", "TAMASOVO"],
-         stats: { population: 1248, dusunCount: 5, kkCount: 312, connectivityIndex: 98, productiveLandArea: 42, productiveActivePercent: 75, growthRate: "+2.4% Pertumbuhan Tahun Ini" },
-         agenda, tourism, testimonies
+         ...DEFAULT_CMS_DATA,
+         agenda,
+         tourism,
+         testimonies,
        });
     }
 
@@ -35,7 +36,7 @@ export async function GET() {
         population: settings.population,
         dusunCount: settings.dusunCount,
         kkCount: settings.kkCount,
-        connectivityIndex: settings.connectivityIndex,
+        religionCount: settings.religionCount,
         productiveLandArea: settings.productiveLandArea,
         productiveActivePercent: settings.productiveActivePercent,
         growthRate: settings.growthRate,
@@ -72,12 +73,12 @@ export async function PUT(req: NextRequest) {
         visionTitle: data.visionTitle || "",
         visionDescription: data.visionDescription || "",
         dusunList: JSON.stringify(data.dusunList || []),
-        population: data.stats?.population || 0,
-        dusunCount: data.stats?.dusunCount || 0,
-        kkCount: data.stats?.kkCount || 0,
-        connectivityIndex: data.stats?.connectivityIndex || 0,
-        productiveLandArea: data.stats?.productiveLandArea || 0,
-        productiveActivePercent: data.stats?.productiveActivePercent || 0,
+        population: Number(data.stats?.population) || 0,
+        dusunCount: Number(data.stats?.dusunCount) || 0,
+        kkCount: Number(data.stats?.kkCount) || 0,
+        religionCount: Number(data.stats?.religionCount) || 0,
+        productiveLandArea: Number(data.stats?.productiveLandArea) || 0,
+        productiveActivePercent: Number(data.stats?.productiveActivePercent) || 0,
         growthRate: data.stats?.growthRate || "",
       };
 
@@ -124,8 +125,8 @@ export async function PUT(req: NextRequest) {
         if (t.id) {
           await tx.tourismSpot.upsert({
             where: { id: t.id },
-            update: { title: t.title, category: t.category, description: t.description, imageUrl: t.imageUrl, content: t.content, visitorCount: t.visitorCount, status: t.status },
-            create: { id: t.id, title: t.title, category: t.category, description: t.description, imageUrl: t.imageUrl, content: t.content, visitorCount: t.visitorCount, status: t.status },
+            update: { title: t.title, category: t.category, description: t.description, imageUrl: t.imageUrl, content: t.content, visitorCount: Number(t.visitorCount) || 0, status: t.status },
+            create: { id: t.id, title: t.title, category: t.category, description: t.description, imageUrl: t.imageUrl, content: t.content, visitorCount: Number(t.visitorCount) || 0, status: t.status },
           });
         }
       }

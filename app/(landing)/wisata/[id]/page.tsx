@@ -73,7 +73,7 @@ export default async function WisataDetailPage(props: { params: Promise<{ id: st
                   Total Pengunjung
                 </div>
                 <div className="text-3xl font-black text-white font-heading">
-                  {spot.visitorCount.toLocaleString('id-ID')}
+                  {Number(spot.visitorCount || 0).toLocaleString('id-ID')}
                 </div>
               </div>
             </div>

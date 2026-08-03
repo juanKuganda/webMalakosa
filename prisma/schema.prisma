@@ -29,7 +29,7 @@ model CmsSettings {
   dusunCount                Int
   dusunList                 String @default("[\"PANTE\", \"KAILI JAYA\", \"SINTUVU\", \"UNA-UNA\", \"KALBA\", \"MADURATNA\", \"INDRA PRASTA\", \"TAMAN BALI\", \"TAMASOVO\"]")
   kkCount                   Int
-  connectivityIndex         Int
+  religionCount             Int    @default(4)
   productiveLandArea        Int
   productiveActivePercent   Int
   growthRate                String
