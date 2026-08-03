@@ -33,7 +33,6 @@ export function AccountTab() {
   const [fetching, setFetching] = useState(true);
 
   const fetchProfile = async () => {
-    setFetching(true);
     try {
       const res = await fetch("/api/auth/profile");
       if (res.ok) {
