@@ -63,7 +63,7 @@ export async function POST(request: Request) {
     const buffer = Buffer.from(arrayBuffer);
 
     // 4. Upload ke Supabase Storage
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from('malakosa')
       .upload(filename, buffer, {
         contentType: file.type || 'image/jpeg',
@@ -90,10 +90,11 @@ export async function POST(request: Request) {
       url: publicUrlData.publicUrl,
       success: true,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : 'Terjadi kesalahan sistem saat mengunggah gambar.';
     console.error('Upload handler error:', error);
     return NextResponse.json(
-      { error: error?.message || 'Terjadi kesalahan sistem saat mengunggah gambar.' },
+      { error: errorMsg },
       { status: 500 }
     );
   }

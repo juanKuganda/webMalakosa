@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { VillageCMSData, TourismSpot } from "@/lib/cms-store";
 import { toast } from "sonner";
-import { Plus, Trash, Image as ImageIcon, WarningCircle } from "@phosphor-icons/react";
+import { Plus, Trash, Image as ImageIcon } from "@phosphor-icons/react";
 import Image from "next/image";
 
 export function TourismTab({ 
