@@ -32,25 +32,31 @@ export function AccountTab() {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
 
-  const fetchProfile = async () => {
-    try {
-      const res = await fetch("/api/auth/profile");
-      if (res.ok) {
-        const data = await res.json();
-        if (data.user?.username) {
-          setInitialUsername(data.user.username);
-          setUsername(data.user.username);
+  useEffect(() => {
+    let ignore = false;
+    async function loadProfile() {
+      try {
+        const res = await fetch("/api/auth/profile");
+        if (res.ok) {
+          const data = await res.json();
+          if (!ignore && data.user?.username) {
+            setInitialUsername(data.user.username);
+            setUsername(data.user.username);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load profile:", err);
+      } finally {
+        if (!ignore) {
+          setFetching(false);
         }
       }
-    } catch (err) {
-      console.error("Failed to load profile:", err);
-    } finally {
-      setFetching(false);
     }
-  };
 
-  useEffect(() => {
-    fetchProfile();
+    loadProfile();
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
