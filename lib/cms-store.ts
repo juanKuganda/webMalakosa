@@ -1,5 +1,3 @@
-
-
 export function formatDateToIndonesian(dateString: string) {
   if (!dateString) return "";
   const date = new Date(dateString);
@@ -15,11 +13,11 @@ export function formatDateToIndonesian(dateString: string) {
 }
 
 export interface VillageStats {
-  population: number;
+  population: number | string;
   dusunCount: number;
-  kkCount: number;
-  connectivityIndex: number;
-  productiveLandArea: number;
+  kkCount: number | string;
+  religionCount: number | string;
+  productiveLandArea: number | string;
   productiveActivePercent: number;
   growthRate: string;
 }
@@ -39,7 +37,7 @@ export interface TourismSpot {
   description: string;
   imageUrl?: string;
   content?: string;
-  visitorCount: number;
+  visitorCount: number | string;
   status: string;
 }
 
@@ -77,13 +75,13 @@ export const DEFAULT_CMS_DATA: VillageCMSData = {
     "MADURATNA", "INDRA PRASTA", "TAMAN BALI", "TAMASOVO"
   ],
   stats: {
-    population: 1248,
+    population: 2343,
     dusunCount: 9,
-    kkCount: 312,
-    connectivityIndex: 98,
+    kkCount: 730,
+    religionCount: 4,
     productiveLandArea: 42,
     productiveActivePercent: 75,
-    growthRate: "+2.4% Pertumbuhan Tahun Ini",
+    growthRate: "Berdasarkan Data Juni 2026",
   },
   agenda: [],
   tourism: [],

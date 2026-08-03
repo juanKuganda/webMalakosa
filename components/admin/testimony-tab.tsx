@@ -153,7 +153,7 @@ export function TestimonyTab({
                 <div className="flex gap-2 items-start pt-2">
                   <ChatTeardropText size={16} weight="fill" className="text-zinc-300 shrink-0 mt-0.5" />
                   <p className="text-xs text-[#414844] italic leading-relaxed">
-                    "{item.text}"
+                    &quot;{item.text}&quot;
                   </p>
                 </div>
               </div>

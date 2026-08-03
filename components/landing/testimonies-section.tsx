@@ -73,34 +73,12 @@ export default function TestimoniesSection() {
           <div className={`flex ${shouldAnimate ? "w-max hover:[&>div]:[animation-play-state:paused]" : "justify-center flex-wrap gap-6 md:gap-10"}`}>
             {/* First Set */}
             <div className={`flex gap-6 md:gap-10 ${shouldAnimate ? "pr-6 md:pr-10 animate-scroll" : ""}`}>
-              {TESTIMONIALS.length > 0 ? TESTIMONIALS.map((t, idx) => (
-                <div key={idx} className="w-[85vw] md:w-[400px] shrink-0 text-left space-y-4 cursor-pointer">
-                  <div className="flex gap-1 text-secondary-fixed">
-                    {[...Array(t.rating)].map((_, i) => (
-                      <Star key={i} size={18} weight="fill" className="text-secondary-fixed" />
-                    ))}
-                  </div>
-                  <p className="font-sans text-base md:text-lg italic leading-relaxed text-white/90">
-                    &quot;{t.text}&quot;
-                  </p>
-                  <div>
-                    <p className="font-heading font-bold text-base md:text-lg">{t.name}</p>
-                    <p className="font-sans text-xs md:text-sm text-white/60">{t.role}</p>
-                  </div>
-                </div>
-              )) : (
-                <div className="text-white/60 text-center w-full min-w-[300px] italic py-8 pr-10">
-                  Belum ada testimoni.
-                </div>
-              )}
-            </div>
-            {/* Second Set (Duplicate for seamless loop) */}
-            {shouldAnimate && (
-              <div className="flex gap-6 md:gap-10 pr-6 md:pr-10 animate-scroll" aria-hidden="true">
-                {TESTIMONIALS.length > 0 ? TESTIMONIALS.map((t, idx) => (
+              {TESTIMONIALS.length > 0 ? TESTIMONIALS.map((t, idx) => {
+                const starCount = Math.max(0, Math.min(5, Math.floor(Number(t.rating || 5))));
+                return (
                   <div key={idx} className="w-[85vw] md:w-[400px] shrink-0 text-left space-y-4 cursor-pointer">
                     <div className="flex gap-1 text-secondary-fixed">
-                      {[...Array(t.rating)].map((_, i) => (
+                      {[...Array(starCount)].map((_, i) => (
                         <Star key={i} size={18} weight="fill" className="text-secondary-fixed" />
                       ))}
                     </div>
@@ -112,7 +90,35 @@ export default function TestimoniesSection() {
                       <p className="font-sans text-xs md:text-sm text-white/60">{t.role}</p>
                     </div>
                   </div>
-                )) : null}
+                );
+              }) : (
+                <div className="text-white/60 text-center w-full min-w-[300px] italic py-8 pr-10">
+                  Belum ada testimoni.
+                </div>
+              )}
+            </div>
+            {/* Second Set (Duplicate for seamless loop) */}
+            {shouldAnimate && (
+              <div className="flex gap-6 md:gap-10 pr-6 md:pr-10 animate-scroll" aria-hidden="true">
+                {TESTIMONIALS.length > 0 ? TESTIMONIALS.map((t, idx) => {
+                  const starCount = Math.max(0, Math.min(5, Math.floor(Number(t.rating || 5))));
+                  return (
+                    <div key={idx} className="w-[85vw] md:w-[400px] shrink-0 text-left space-y-4 cursor-pointer">
+                      <div className="flex gap-1 text-secondary-fixed">
+                        {[...Array(starCount)].map((_, i) => (
+                          <Star key={i} size={18} weight="fill" className="text-secondary-fixed" />
+                        ))}
+                      </div>
+                      <p className="font-sans text-base md:text-lg italic leading-relaxed text-white/90">
+                        &quot;{t.text}&quot;
+                      </p>
+                      <div>
+                        <p className="font-heading font-bold text-base md:text-lg">{t.name}</p>
+                        <p className="font-sans text-xs md:text-sm text-white/60">{t.role}</p>
+                      </div>
+                    </div>
+                  );
+                }) : null}
               </div>
             )}
           </div>

@@ -1,10 +1,50 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Users, MapPinLine } from "@phosphor-icons/react/dist/ssr";
+import { TouristAttractionJsonLd } from "@/components/seo/json-ld";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(props: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const params = await props.params;
+  const spot = await prisma.tourismSpot.findUnique({
+    where: { id: params.id },
+  });
+
+  if (!spot) {
+    return {
+      title: "Destinasi Wisata Tidak Ditemukan",
+    };
+  }
+
+  const title = `${spot.title} - Wisata Desa Malakosa`;
+  const description = spot.description || `Jelajahi keindahan ${spot.title} di Desa Malakosa, Kec. Balinggi, Sulawesi Tengah.`;
+  const url = `https://www.malakosa.web.id/wisata/${spot.id}`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      type: "article",
+      images: spot.imageUrl ? [{ url: spot.imageUrl, alt: spot.title }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: spot.imageUrl ? [spot.imageUrl] : undefined,
+    },
+  };
+}
 
 export default async function WisataDetailPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -18,6 +58,13 @@ export default async function WisataDetailPage(props: { params: Promise<{ id: st
 
   return (
     <main className="min-h-screen bg-[#fcf9f8] text-[#1c1b1b] pb-20">
+      <TouristAttractionJsonLd
+        id={spot.id}
+        title={spot.title}
+        description={spot.description}
+        imageUrl={spot.imageUrl}
+        category={spot.category}
+      />
       {/* Hero Section */}
       <section className="relative w-full h-screen min-h-[700px] overflow-hidden flex flex-col justify-end">
         {spot.imageUrl ? (
@@ -73,7 +120,7 @@ export default async function WisataDetailPage(props: { params: Promise<{ id: st
                   Total Pengunjung
                 </div>
                 <div className="text-3xl font-black text-white font-heading">
-                  {spot.visitorCount.toLocaleString('id-ID')}
+                  {Number(spot.visitorCount || 0).toLocaleString('id-ID')}
                 </div>
               </div>
             </div>

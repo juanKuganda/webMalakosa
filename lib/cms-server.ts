@@ -29,7 +29,7 @@ export async function getServerCMSData(): Promise<VillageCMSData> {
         population: settings.population,
         dusunCount: settings.dusunCount,
         kkCount: settings.kkCount,
-        connectivityIndex: settings.connectivityIndex,
+        religionCount: settings.religionCount,
         productiveLandArea: settings.productiveLandArea,
         productiveActivePercent: settings.productiveActivePercent,
         growthRate: settings.growthRate,

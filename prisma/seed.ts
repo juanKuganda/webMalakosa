@@ -4,7 +4,9 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  // 1. Create Default Admin
+  console.log("🌱 [DB SEED] Menyiapkan data awal sistem Desa Malakosa...");
+
+  // 1. Ensure Default Admin User exists
   const adminExists = await prisma.adminUser.findUnique({
     where: { username: "admin" },
   });
@@ -18,46 +20,64 @@ async function main() {
         passwordHash,
       },
     });
-    console.log("Created default admin user: admin / admin123");
+    console.log("👤 [ADMIN] Default Admin User dibuat: username: 'admin' / password: 'admin123'");
+  } else {
+    console.log("👤 [ADMIN] Admin user sudah terdaftar di sistem.");
   }
 
-  // 2. Create Default CMS Data (if not exists)
-  const settingsCount = await prisma.cmsSettings.count();
-  if (settingsCount === 0) {
+  // 2. Canonical CMS Settings
+  const baselineSettings = {
+    heroTitle: "DESA MALAKOSA",
+    heroTagline: "Malakosa - Harmoni Alam dan Tradisi",
+    heroDescription:
+      "Membangun masa depan digital yang berakar pada nilai-nilai agraris dan keberlanjutan lingkungan Sulawesi Tengah.",
+    visionTitle: "Pilar Desa: Alam, Sejarah, Sosial",
+    visionDescription:
+      "Masyarakat Desa Malakosa didominasi oleh Suku Kaili dengan tradisi gotong royong agraris peninggalan Kerajaan Balinggi.",
+    population: 2343,
+    dusunCount: 9,
+    dusunList: JSON.stringify([
+      "PANTE",
+      "KAILI JAYA",
+      "SINTUVU",
+      "UNA-UNA",
+      "KALBA",
+      "MADURATNA",
+      "INDRA PRASTA",
+      "TAMAN BALI",
+      "TAMASOVO",
+    ]),
+    kkCount: 730,
+    religionCount: 4,
+    productiveLandArea: 42,
+    productiveActivePercent: 75,
+    growthRate: "Berdasarkan Data Juni 2026",
+  };
+
+  const existingSettings = await prisma.cmsSettings.findFirst();
+  if (!existingSettings) {
     await prisma.cmsSettings.create({
+      data: baselineSettings,
+    });
+    console.log("📊 [SETTINGS] Pengaturan statistik Desa Malakosa berhasil diinisialisasi.");
+  } else {
+    await prisma.cmsSettings.update({
+      where: { id: existingSettings.id },
       data: {
-        heroTitle: "DESA MALAKOSA",
-        heroTagline: "Malakosa - Harmoni Alam dan Tradisi",
-        heroDescription:
-          "Membangun masa depan digital yang berakar pada nilai-nilai agraris dan keberlanjutan lingkungan Sulawesi Tengah.",
-        visionTitle: "Pilar Desa: Alam, Sejarah, Sosial",
-        visionDescription:
-          "Masyarakat Desa Malakosa didominasi oleh Suku Kaili dengan tradisi gotong royong agraris peninggalan Kerajaan Balinggi.",
-        population: 1248,
+        population: 2343,
         dusunCount: 9,
-        dusunList: JSON.stringify(["PANTE", "KAILI JAYA", "SINTUVU", "UNA-UNA", "KALBA", "MADURATNA", "INDRA PRASTA", "TAMAN BALI", "TAMASOVO"]),
-        kkCount: 312,
-        connectivityIndex: 98,
+        dusunList: baselineSettings.dusunList,
+        kkCount: 730,
+        religionCount: 4,
         productiveLandArea: 42,
         productiveActivePercent: 75,
-        growthRate: "+2.4% Pertumbuhan Tahun Ini",
+        growthRate: "Berdasarkan Data Juni 2026",
       },
     });
-    console.log("Created default CMS Settings");
+    console.log("📊 [SETTINGS] Pengaturan statistik Desa Malakosa disinkronkan.");
   }
 
-  // 3. Create Agenda
-  // (Kosong untuk mode production, agar diisi melalui panel Admin)
-  if (await prisma.agendaEvent.count() === 0) {
-    console.log("No Agenda Events seeded (production ready)");
-  }
-
-  // 4. Create Tourism
-  // (Kosong untuk mode production, agar diisi melalui panel Admin)
-  if (await prisma.tourismSpot.count() === 0) {
-    console.log("No Tourism Spots seeded (production ready)");
-  }
-
+  console.log("✨ [DB SEED SELESAI] Admin dan konfigurasi statistik siap untuk data produksi!");
 }
 
 main()
@@ -65,7 +85,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e);
+    console.error("❌ Error saat seeding database:", e);
     await prisma.$disconnect();
     process.exit(1);
   });

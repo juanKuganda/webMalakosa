@@ -39,7 +39,7 @@ export default function BentoGridSection() {
   }, { scope: containerRef });
 
   useGSAP(() => {
-    const countTarget = data.stats.population;
+    const countTarget = Number(data.stats.population) || 0;
     const counterObj = { value: 0 };
     const anim = gsap.to(counterObj, {
       value: countTarget,
@@ -63,7 +63,8 @@ export default function BentoGridSection() {
         strokeDashoffset: length,
       });
 
-      const activeRatio = Math.min(Math.max(data.stats.productiveActivePercent, 0), 100) / 100;
+      const activePercent = Number(data.stats.productiveActivePercent) || 0;
+      const activeRatio = Math.min(Math.max(activePercent, 0), 100) / 100;
       gsap.to(circleRef.current, {
         strokeDashoffset: length * (1 - activeRatio),
         duration: 1.2,
@@ -115,7 +116,7 @@ export default function BentoGridSection() {
           ref={countRef}
           className="font-heading text-6xl md:text-8xl text-primary font-black tabular-nums mb-4"
         >
-          {data.stats.population.toLocaleString("id-ID")}
+          {Number(data.stats.population || 0).toLocaleString("id-ID")}
         </div>
         <div className="font-heading text-lg md:text-xl text-on-secondary-container font-bold">
           Jiwa Terdaftar
@@ -205,7 +206,7 @@ export default function BentoGridSection() {
         </div>
       </div>
 
-      {/* Religion Count (Replaces Connectivity Index) */}
+      {/* Religion Count */}
       <div className="bento-animate col-span-12 md:col-span-4 bg-[#012d1d] text-white p-8 md:p-10 rounded-[2rem] md:rounded-[3rem] flex flex-col justify-between relative overflow-hidden min-h-[220px] shadow-2xl group border border-white/5">
         <div className="absolute inset-0 bg-gradient-to-t from-[#0e6c4a]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         <div className="relative z-10 flex flex-col h-full justify-between">
@@ -217,7 +218,7 @@ export default function BentoGridSection() {
               </span>
             </div>
             <div className="font-heading text-6xl md:text-7xl font-black text-white mb-2">
-              {data.stats.connectivityIndex}
+              {data.stats.religionCount}
             </div>
           </div>
           <div className="font-heading font-bold text-lg md:text-xl text-[#a0f4c8]">Agama Terdaftar</div>

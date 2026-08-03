@@ -1,5 +1,5 @@
 "use client";
-/* eslint-disable react-hooks/exhaustive-deps, react-hooks/rules-of-hooks, react-hooks/set-state-in-effect */
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { VillageCMSData, DEFAULT_CMS_DATA } from "@/lib/cms-store";
 
@@ -17,6 +17,7 @@ export function CMSProvider({ children, initialData }: { children: ReactNode, in
   const [loading, setLoading] = useState(!initialData);
 
   useEffect(() => {
+    let ignore = false;
     if (!initialData) {
       fetch("/api/cms", { cache: "no-store" })
         .then(async (res) => {
@@ -24,18 +25,22 @@ export function CMSProvider({ children, initialData }: { children: ReactNode, in
           return await res.json();
         })
         .then((json) => {
-          setData(json);
-          setLoading(false);
+          if (!ignore) {
+            setData(json);
+            setLoading(false);
+          }
         })
         .catch((err) => {
-          console.error("Failed to fetch CMS data", err);
-          setData(DEFAULT_CMS_DATA);
-          setLoading(false);
+          if (!ignore) {
+            console.error("Failed to fetch CMS data", err);
+            setData(DEFAULT_CMS_DATA);
+            setLoading(false);
+          }
         });
-    } else {
-      setData(initialData);
-      setLoading(false);
     }
+    return () => {
+      ignore = true;
+    };
   }, [initialData]);
 
   const updateData = async (newData: VillageCMSData) => {

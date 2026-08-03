@@ -124,7 +124,7 @@ export default function BeachTourismSection() {
           </div>
           
           <h2 className="font-heading text-5xl md:text-7xl lg:text-[5.5rem] font-black text-primary leading-[0.9] tracking-tighter drop-shadow-2xl uppercase">
-            {activeSpot.title.split(' ').map((word, i) => (
+            {(activeSpot.title || "Destinasi Wisata").split(' ').map((word, i) => (
               <React.Fragment key={i}>
                 {word} {i === 0 && <br />}
               </React.Fragment>
@@ -143,7 +143,7 @@ export default function BeachTourismSection() {
                   <Users size={28} weight="bold" />
                 </div>
                 <h4 className="font-heading font-black text-primary mt-1 text-sm md:text-base">Pengunjung</h4>
-                <p className="text-xl font-bold font-mono text-[#012d1d]">{activeSpot.visitorCount.toLocaleString('id-ID')}</p>
+                <p className="text-xl font-bold font-mono text-[#012d1d]">{Number(activeSpot.visitorCount || 0).toLocaleString('id-ID')}</p>
               </div>
               <div className="flex flex-col gap-3">
                 <div className="w-14 h-14 rounded-2xl bg-[#a0f4c8] flex items-center justify-center text-[#012d1d] shadow-lg shadow-[#a0f4c8]/30 transform rotate-3 hover:rotate-0 transition-transform">

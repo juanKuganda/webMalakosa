@@ -166,9 +166,20 @@ export function TourismTab({
             <div className="pt-2 flex justify-between items-center text-xs font-bold text-[#012d1d]">
               <span>Pengunjung Bulan Ini:</span>
               <Input
-                type="number"
-                value={spot.visitorCount}
-                onChange={(e: any) => handleTourismChange(spot.id, "visitorCount", Number(e.target.value))}
+                type="text"
+                inputMode="numeric"
+                value={spot.visitorCount !== undefined && spot.visitorCount !== null ? String(spot.visitorCount) : ""}
+                onKeyDown={(e) => {
+                  if (["-", "+", "e", "E", ".", ","].includes(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
+                onFocus={(e) => e.target.select()}
+                onChange={(e: any) => {
+                  const raw = e.target.value.replace(/\D/g, "");
+                  handleTourismChange(spot.id, "visitorCount", raw === "" ? "" : String(parseInt(raw, 10)));
+                }}
+                placeholder="0"
                 className="w-24 bg-white px-2 py-1 rounded-md border border-zinc-300 font-heading text-base font-black text-[#0e6c4a] text-right focus:outline-none"
               />
             </div>
