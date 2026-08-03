@@ -199,37 +199,48 @@ export function StatsTab({
           <h4 className="font-heading font-bold text-sm text-[#012d1d]">
             Bagan Pengunjung Wisata
           </h4>
-          <div className="w-full h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={formData.tourism.map((spot) => ({
-                  name: spot.title,
-                  pengunjung: spot.visitorCount,
-                }))}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e4e4e7" />
-                <XAxis
-                  dataKey="name"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: "#414844", fontSize: 12 }}
-                  dy={10}
-                />
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: "#414844", fontSize: 12 }}
-                  dx={-10}
-                />
-                <Tooltip
-                  cursor={{ fill: "#f4f4f5" }}
-                  contentStyle={{ borderRadius: "12px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
-                />
-                <Bar dataKey="pengunjung" fill="#0e6c4a" radius={[4, 4, 0, 0]} barSize={40} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          {formData.tourism.length === 0 ? (
+            <div className="w-full h-[220px] flex flex-col items-center justify-center border border-dashed border-zinc-300 rounded-xl text-center p-6 bg-white/50">
+              <p className="text-xs text-[#414844] font-medium">
+                Belum ada data destinasi wisata untuk ditampilkan pada bagan.
+              </p>
+              <p className="text-[11px] text-zinc-400 mt-1">
+                Tambahkan destinasi wisata pada tab &ldquo;Pariwisata&rdquo; untuk melihat grafik pengunjung.
+              </p>
+            </div>
+          ) : (
+            <div className="w-full h-[300px] min-w-0">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={250}>
+                <BarChart
+                  data={formData.tourism.map((spot) => ({
+                    name: spot.title,
+                    pengunjung: Number(spot.visitorCount) || 0,
+                  }))}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e4e4e7" />
+                  <XAxis
+                    dataKey="name"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "#414844", fontSize: 12 }}
+                    dy={10}
+                  />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "#414844", fontSize: 12 }}
+                    dx={-10}
+                  />
+                  <Tooltip
+                    cursor={{ fill: "#f4f4f5" }}
+                    contentStyle={{ borderRadius: "12px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
+                  />
+                  <Bar dataKey="pengunjung" fill="#0e6c4a" radius={[4, 4, 0, 0]} barSize={40} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
           <p className="text-[11px] text-[#414844]">
             Grafik ini menampilkan jumlah pengunjung bulanan untuk setiap destinasi wisata.
           </p>
