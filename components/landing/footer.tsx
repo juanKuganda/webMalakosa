@@ -5,7 +5,7 @@ import { WhatsappLogo, MapPin, InstagramLogo, FacebookLogo } from "@phosphor-ico
 import Link from "next/link";
 
 export default function Footer() {
-  const waLink = "https://chat.whatsapp.com/Kc2zeJD7t8W1BlrpQRNOwa";
+  const waLink = "https://chat.whatsapp.com/BDlBLxySwjT3xSpMC6HUVn";
 
   return (
     <footer className="relative bg-[#012d1d] text-white overflow-hidden mt-32 rounded-t-[3rem] md:rounded-t-[5rem]">
